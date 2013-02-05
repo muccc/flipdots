@@ -1,0 +1,15 @@
+*.lss
+*.map
+*.sym
+*.o
+*.eep
+.DS_Store
+.DS_Store?
+*.sublime-*
+.idea
+.*.swp
+Gemfile.lock
+.rvmrc
+tmp/
+Gemfile.lock
+
