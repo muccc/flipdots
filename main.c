@@ -1,159 +1,189 @@
 #ifndef F_CPU
 #define F_CPU 16000000
 #endif
-// Hey Fucker, this is still work/hack in progress, don't expect anything usefull here!
+
 #include <avr/io.h>
 #include <util/delay.h>
-//#include <avr/interrupt.h>
-
 
 #define DATA_COL (1<<PC6) //output 7
 #define DATA_ROW (1<<PC0) //output 1
 #define STROBE   (1<<PC1) //output 2
-//#define OE_WHITE (1<<PC2) //output 3
-//#define OE_BLACK (1<<PC3) //output 4
 
-#define OE_WHITE (1<<PC3) //output 3
-#define OE_BLACK (1<<PC2) //output 4
+#define OE_WHITE (1<<PC3) //output 4
+#define OE_BLACK (1<<PC2) //output 3
 
 #define CLK_COL  (1<<PC4) //output 5
 #define CLK_ROW  (1<<PC5) //output 6
 
+#define CLK_DELAY  2			/* us */
+#define FLIP_DELAY 2			/* ms */
+#define STROBE_DELAY 1			/* us */
+#define LINE_DELAY 0			/* ms */
 
-#define CLK_DELAY  3  /* us */
-#define FLIP_DELAY 5 /* ms */
+#define DISP_COLS   24 + 20
+#define DISP_ROWS   16
 
-#define DISP_COLS   16
-#define DISP_ROWS   24
+#define FRAME_DELAY 5
 
+enum sreg {
+	ROW,
+	COL
+};
 
-void write_col( uint8_t colIndex, uint64_t data );
+#define ISBITSET(x,i) ((x[i>>3] & (1<<(i&7)))!=0)
+#define SETBIT(x,i) x[i>>3]|=(1<<(i&7));
+#define CLEARBIT(x,i) x[i>>3]&=(1<<(i&7))^0xFF;
 
+#define DATA(reg)								\
+	((reg == ROW) ? DATA_ROW : DATA_COL)
+#define CLK(reg)								\
+	((reg == ROW) ? CLK_ROW : CLK_COL)
+#define OE(reg)									\
+	((reg == ROW) ? OE_ROW : OE_COL)
 
+void sreg_push_bit(enum sreg reg, uint8_t bit);
+void sreg_fill(enum sreg reg, int count, uint8_t *data);
+
+void strobe(void);
+void flip_pixels(void);
+
+void display_frame(uint8_t *row_data);
+
+uint8_t frame1[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0x55, 0x55, 0x55, 0x55, 0x55,
+				   0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0xDE, 0xAD, 0xBE, 0xEF, 0xDE,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0xFF, 0x00, 0x00, 0x00, 0xFF};
+uint8_t frame2[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
+				   0x55, 0x55, 0x55, 0x55, 0x55,
+				   0x55, 0x55, 0x55, 0x55, 0x55,
+				   0x55, 0x55, 0x55, 0x55, 0x55,
+				   0x55, 0x55, 0x55, 0x55, 0x55,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0x00, 0x00, 0xFF, 0x00, 0x00,
+				   0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0x00, 0x00, 0x00, 0x00, 0x00,
+				   0xFF, 0x00, 0x00, 0x00, 0xFF};
+
+uint8_t frame3[5*16] = {0x00};
+uint8_t frame4[5*16] = {0x00};
+
+uint8_t *frames[] = {frame1, frame2, frame3, frame4};
 
 int main( void ) {
-	uint32_t data;
-	uint8_t  row=0, col=1;
-
 	// init ports
 	DDRC  |=  (DATA_COL|STROBE|OE_WHITE|OE_BLACK|CLK_ROW|CLK_COL|DATA_ROW);
 	PORTC &= ~(DATA_COL|STROBE|OE_WHITE|OE_BLACK|CLK_ROW|CLK_COL|DATA_ROW);
 
-
-	uint64_t mask = 1, i =0, j=0;
-
-  
-	for( row=0; row<DISP_COLS; row++ ) {
-		write_col( row, 0);
-		_delay_ms(2);
+	for (int i = 0; i < 5*16; ++i) {
+		frame4[i] = 0xFF;
 	}
-	_delay_ms(1000);
-
-
-	while( 1 ) {
-		if ( i%DISP_ROWS == 0 ) mask = 1;
-		for( row=0; row<DISP_COLS; row++ ) {
-			//if ( i%24 < 4 ) continue;	
-			data |= ((uint64_t)mask<<row);
-
-			write_col( row, ((row+i)%2) ? 0b1010101010101010101010101 : 0b0101010101010101010101010 ); // 1x1 schachbrett
-			//write_col( row, ((uint64_t)mask<<row) );
-			//write_col( row, j+=16);
-			//write_col( row, mask);
-			//write_col( row-1, 0);
-
-
-			_delay_ms(10); // for sanity
-			
-		}
-		mask=mask<<1;
-		i++;
-		//if (col < DISP_COLS-1) {
-		//	col++;
-		//} else {
-		//	col = 0;
-		//}
+	
+	int i = 0;
+	while (1) {
+		
+		display_frame(frames[i%4]);
+		_delay_ms(FRAME_DELAY);
+		++i;
 	}
+
 	return 0;
 }
 
+void write_bit(uint8_t *byte, int pos, uint8_t bit) {
+	*(byte + pos/8) |= (bit << pos%8);
+}
 
+void display_frame(uint8_t *data) {
+	uint8_t row_select[DISP_ROWS/8];
+	
+	for (int row = 0; row < DISP_ROWS; ++row) { /* Every row */
+		uint8_t *row_data = data + row * (DISP_COLS-4)/8; /* -4 should be +4 above */
 
-void write_col( uint8_t colIndex, uint64_t data ) {
-	uint8_t i;
-	uint8_t _colCurIndex=0;
-	uint8_t _pixelDat=0;
-	uint8_t _pixelCurIndex=0;
-
-	// TODO: mask data
-
-	// all drivers off
-	PORTC &= ~(OE_WHITE);
-	PORTC &= ~(OE_BLACK);
-
-	// let's play save
-	PORTC &= ~(STROBE);
-	PORTC &= ~(DATA_COL);
-	PORTC &= ~(DATA_ROW);
-	PORTC &= ~(CLK_COL);
-	PORTC &= ~(CLK_ROW);
-
-	// select col
-	for( _colCurIndex=0; _colCurIndex < DISP_COLS; _colCurIndex++) {
-		// one extra clock to push out a "don't care"
-		// because it loses a bit at the transfer to the next section
-		if( _colCurIndex == colIndex ) {
-			PORTC |= (DATA_COL);
+		for (int i = 0; i < DISP_ROWS/8; ++i) { /* Clear row_select */
+			row_select[i] = 0;
 		}
-		else {
-			PORTC &= ~(DATA_COL);
-		}
-		_delay_us( CLK_DELAY );
+		SETBIT(row_select, row); /* Set selected row */
+		sreg_fill(COL, DISP_ROWS, row_select); /* Fill row select shift register */
+		strobe();
+		
+		sreg_fill(ROW, DISP_COLS, row_data); /* Fill row data shift register */
+		strobe();
+		flip_pixels();
 
-		PORTC |= (CLK_COL);
-		_delay_us( CLK_DELAY );
-		PORTC &= ~(CLK_COL);
+		_delay_ms(LINE_DELAY);
 	}
+}
 
-
-	// write data for each row in that col
-	for( _pixelCurIndex=0; _pixelCurIndex<(DISP_ROWS); _pixelCurIndex++ ) {
-//		if(_pixelCurIndex<16){
-			_pixelDat = data & ((uint64_t)1 << _pixelCurIndex) ? 1: 0;
-//		}else{
-//			_pixelDat = data&(1<<_pixelCurIndex)? 0: 1;
-//		}
-		if( _pixelDat ) {
-			PORTC &= ~(DATA_ROW);
-		}
-		else {
-			PORTC |= (DATA_ROW);
-		}
-		_delay_us( CLK_DELAY );
-
-		PORTC |= (CLK_ROW);
-		_delay_us(CLK_DELAY);
-
-		PORTC &= ~(CLK_ROW);
+/* Output bit on reg and pulse clk signal */
+void sreg_push_bit(enum sreg reg, uint8_t bit) {
+	if (bit) {
+		PORTC |= DATA(reg);			/* set data bit */
+	} else {
+		PORTC &= ~DATA(reg);			/* unset data bit */
 	}
+	
+	PORTC |= CLK(reg); 			/* clk high */
+	_delay_us(CLK_DELAY);		/* Wait */
+	PORTC &= ~CLK(reg);			/* clk low */
+}
 
-	// commit data
+/* Fill register reg with count bits from data LSB first */
+void sreg_fill(enum sreg reg, int count, uint8_t *data) {
+	if (reg == ROW) {
+		count -= 4;
+	}
+	int i = 0;
+	int halt_count = 0;
+	while (i < count) {
+		if (reg == ROW) {
+			if (i > 20 && halt_count < 4) {
+				++halt_count;
+				--i;
+			}
+		}
+		sreg_push_bit(reg, ISBITSET(data, i));
+		++i;
+	}
+}
+
+void strobe(void) {
 	PORTC |= STROBE;
+	_delay_us(STROBE_DELAY);
+	PORTC &= ~STROBE;
+}
 
-	// set whities
+void flip_pixels(void) {
+	// set white pixels
 	PORTC |= (OE_WHITE);
 	PORTC &= ~(OE_BLACK);
-	_delay_ms( FLIP_DELAY );
 
-	// set blackies
+	_delay_ms(FLIP_DELAY);
+
+	// set black pixels
 	PORTC |= (OE_BLACK);
 	PORTC &= ~(OE_WHITE);
 	
-	_delay_ms( FLIP_DELAY );
+	_delay_ms(FLIP_DELAY);
 
-
-	// all drivers off
-//	PORTD &= ~(OE_WHITE);
-//	PORTD &= ~(OE_BLACK);
+	PORTC &= ~(OE_BLACK);
+	PORTC &= ~(OE_WHITE);
 }
-
