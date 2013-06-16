@@ -15,15 +15,15 @@
 #define CLK_COL  (1<<PC4) //output 5
 #define CLK_ROW  (1<<PC5) //output 6
 
-#define CLK_DELAY  2			/* us */
-#define FLIP_DELAY 2			/* ms */
+#define CLK_DELAY  1			/* us */
+#define FLIP_DELAY 1			/* ms */
 #define STROBE_DELAY 1			/* us */
 #define LINE_DELAY 0			/* ms */
 
 #define DISP_COLS   24 + 20
 #define DISP_ROWS   16
 
-#define FRAME_DELAY 5
+#define FRAME_DELAY 0
 
 enum sreg {
 	ROW,
@@ -49,44 +49,52 @@ void flip_pixels(void);
 
 void display_frame(uint8_t *row_data);
 
-uint8_t frame1[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
-				   0x55, 0x55, 0x55, 0x55, 0x55,
-				   0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
-				   0xDE, 0xAD, 0xBE, 0xEF, 0xDE,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0xFF, 0x00, 0x00, 0x00, 0xFF};
-uint8_t frame2[] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA,
-				   0x55, 0x55, 0x55, 0x55, 0x55,
-				   0x55, 0x55, 0x55, 0x55, 0x55,
-				   0x55, 0x55, 0x55, 0x55, 0x55,
-				   0x55, 0x55, 0x55, 0x55, 0x55,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0x00, 0x00, 0xFF, 0x00, 0x00,
-				   0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0x00, 0x00, 0x00, 0x00, 0x00,
-				   0xFF, 0x00, 0x00, 0x00, 0xFF};
+#include "frame1.xbm"
+#include "frame2.xbm"
+#include "frame3.xbm"
+#include "frame4.xbm"
+#include "frame5.xbm"
+#include "frame6.xbm"
+#include "frame7.xbm"
+#include "frame8.xbm"
+#include "frame9.xbm"
+#include "frame10.xbm"
+#include "frame11.xbm"
+#include "frame12.xbm"
 
-uint8_t frame3[5*16] = {0x00};
-uint8_t frame4[5*16] = {0x00};
+#define FRAMES(X)									\
+	X(frame1),										\
+	X(frame2),										\
+	X(frame3),										\
+	X(frame4),										\
+	X(frame5),										\
+	X(frame6),										\
+	X(frame7),										\
+	X(frame8),										\
+	X(frame9),										\
+	X(frame10),										\
+	X(frame11),										\
+	X(frame12)
 
-uint8_t *frames[] = {frame1, frame2, frame3, frame4};
+#define AS_BITS(f)								\
+	f##_bits
+
+uint8_t white[5*16] = {0x00};
+uint8_t black[5*16] = {0x00};
+
+uint8_t *frames[] = {
+	FRAMES(AS_BITS),
+	frame11_bits,
+	frame10_bits,
+	frame9_bits,
+	frame8_bits,
+	frame7_bits,
+	frame6_bits,
+	frame5_bits,
+	frame4_bits,
+	frame3_bits,
+	frame2_bits
+};
 
 int main( void ) {
 	// init ports
@@ -94,15 +102,12 @@ int main( void ) {
 	PORTC &= ~(DATA_COL|STROBE|OE_WHITE|OE_BLACK|CLK_ROW|CLK_COL|DATA_ROW);
 
 	for (int i = 0; i < 5*16; ++i) {
-		frame4[i] = 0xFF;
+		white[i] = 0x00;
+		black[i] = 0xFF;
 	}
 	
-	int i = 0;
-	while (1) {
-		
-		display_frame(frames[i%4]);
-		_delay_ms(FRAME_DELAY);
-		++i;
+	for (int i = 0;; ++i) {
+		display_frame(frames[i% sizeof(frames)/sizeof(frames[0])]);
 	}
 
 	return 0;
@@ -123,13 +128,12 @@ void display_frame(uint8_t *data) {
 		}
 		SETBIT(row_select, row); /* Set selected row */
 		sreg_fill(COL, DISP_ROWS, row_select); /* Fill row select shift register */
-		strobe();
 		
 		sreg_fill(ROW, DISP_COLS, row_data); /* Fill row data shift register */
 		strobe();
 		flip_pixels();
 
-		_delay_ms(LINE_DELAY);
+		/* _delay_ms(LINE_DELAY); */
 	}
 }
 
