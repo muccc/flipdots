@@ -1,0 +1,6 @@
+[submodule "ethersex-flipdot"]
+	path = ethersex-flipdot
+	url = git://github.com/muccc/ethersex-flipdot.git
+[submodule "netfbd"]
+	path = netfbd
+	url = git://github.com/muccc/netfbd.git
