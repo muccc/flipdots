@@ -22,7 +22,7 @@ def send(image):
 	for i in pieces:
 		if (len(i) < 8):
 			i = i.ljust(8, '1')
-		msg += chr(int(str(i[::-1]), 2))
+		msg += chr(int(str(i), 2))
 	
 	sock.sendto(msg, (UDPHOST, UDPPORT))
 
@@ -31,7 +31,7 @@ def send(image):
 ALIVE = 1
 DEAD = 0
 SIZE = 16
-RANDOM = 50
+RANDOM = 10
 DAILY = 0.5
 
 REALIVE = 3
@@ -63,7 +63,7 @@ def sendgol():
 		frame.append(([1] * 12) + [1 if x == 0 else 0 for x in line] + ([1] * 12))
 	print frame
 	send(frame)
-	time.sleep(1)
+	time.sleep(DAILY)
 
 def show():
     for x in xrange(SIZE):

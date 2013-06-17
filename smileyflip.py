@@ -18,7 +18,7 @@ def send(image):
 	for i in pieces:
 		if (len(i) < 8):
 			i = i.ljust(8, '1')
-		msg += chr(int(str(i[::-1]), 2))
+		msg += chr(int(str(i), 2))
 	
 	sock.sendto(msg, (UDPHOST, UDPPORT))
 
