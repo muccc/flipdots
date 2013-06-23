@@ -75,7 +75,7 @@ def sendgol():
 		frame.append([1 if x == 0 else 0 for x in line])
 	print frame
 	send(frame)
-	time.sleep(DAILY)
+	time.sleep(DELAY)
 
 def show():
     for y in xrange(SIZE_Y):
