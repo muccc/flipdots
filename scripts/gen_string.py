@@ -1,31 +1,48 @@
+import socket, time
 import Image, ImageFont, ImageDraw, sys
+import fileinput
+
+UDPHOST="2001:7f0:3003:cafe:222:f9ff:fe01:c65"
+UDPPORT=2323
+
+FPS = 3
 
 IMG_SIZE = (40, 16)
-FONT_SIZE = 12
-FONT_OFFSET= (2,2)
+FONT_SIZE = 19
+FONT_OFFSET= (0,-3)
 
 C_BLACK = (0, 0, 0)
 C_WHITE = (255, 255, 255)
 
-STRING = "fnord"
+sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 
-if len(sys.argv) > 1:
-    STRING = sys.argv[1]
+def list2byte(l):
+    byte = 0
+    i = 0
+    for i in range(8):
+        byte += 2**(7-i) if l[i] else 0
+    return byte
 
-image = Image.new("RGBA", IMG_SIZE, C_BLACK)
-draw = ImageDraw.Draw(image)
-font = ImageFont.load_default()
-draw.text(FONT_OFFSET, STRING, font=font, fill=C_WHITE)
+def array2packet(a):
+    return str(bytearray([list2byte(a[i*8:i*8+8]) for i in range(len(a)/8)]))
 
-#image.save("out.png")
+def str2array(s):
+    image = Image.new("RGBA", IMG_SIZE, C_BLACK)
+    draw = ImageDraw.Draw(image)
+    draw.fontmode = "1"         # No AA
+    font = ImageFont.truetype("FreeSans.ttf", FONT_SIZE)
 
-imgmap = []
-for pixel in image.getdata():
-    r, g, b, a = pixel
-    if r == 255:
-        imgmap.append(1)
-    else:
-        imgmap.append(0)
+    draw.text(FONT_OFFSET, s, font=font, fill=C_WHITE)
 
-print imgmap
+    imgmap = []
+    for pixel in image.getdata():
+        r, g, b, a = pixel
+        if r == 255:
+            imgmap.append(1)
+        else:
+            imgmap.append(0)
+    return imgmap
 
+for text in fileinput.input():
+    sock.sendto(array2packet(str2array(text.strip())), (UDPHOST, UDPPORT))
+    time.sleep(1.0/FPS)
