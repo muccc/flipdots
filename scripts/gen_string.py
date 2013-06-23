@@ -8,8 +8,8 @@ UDPPORT=2323
 FPS = 3
 
 IMG_SIZE = (40, 16)
-FONT_SIZE = 19
-FONT_OFFSET= (0,-3)
+FONT_SIZE = 8
+FONT_OFFSET= (1, -1)
 
 C_BLACK = (0, 0, 0)
 C_WHITE = (255, 255, 255)
@@ -30,7 +30,8 @@ def str2array(s):
     image = Image.new("RGBA", IMG_SIZE, C_BLACK)
     draw = ImageDraw.Draw(image)
     draw.fontmode = "1"         # No AA
-    font = ImageFont.truetype("FreeSans.ttf", FONT_SIZE)
+    font = ImageFont.load_default()
+    # font = ImageFont.truetype("FreeSans.ttf", FONT_SIZE)
 
     draw.text(FONT_OFFSET, s, font=font, fill=C_WHITE)
 
@@ -43,6 +44,9 @@ def str2array(s):
             imgmap.append(0)
     return imgmap
 
-for text in fileinput.input():
+while True:
+    text = sys.stdin.readline()
+    if text == "":
+        break
     sock.sendto(array2packet(str2array(text.strip())), (UDPHOST, UDPPORT))
     time.sleep(1.0/FPS)
