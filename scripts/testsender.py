@@ -2,7 +2,7 @@ import socket
 import time
 import sys
 
-UDPHOST="fe80::222:f9ff:fe01:c65%eth0"
+UDPHOST="2001:7f0:3003:cafe:222:f9ff:fe01:c65"
 UDPPORT=2323
 
 sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
