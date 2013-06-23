@@ -45,7 +45,7 @@ def str2array(s):
     return imgmap
 
 while True:
-    text = sys.stdin.readline()
+    text = sys.stdin.readline().decode('utf-8')
     if text == "":
         break
     sock.sendto(array2packet(str2array(text.strip())), (UDPHOST, UDPPORT))
