@@ -64,7 +64,7 @@ def send(image):
             i = i.ljust(8, '1')
         msg += chr(int(str(i), 2))
 	
-        sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
+    sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
 buf = [([ PX[0]  for x in xrange(SIZE_X)]) for x in xrange(SIZE_Y)]
 stats=[0,0]
