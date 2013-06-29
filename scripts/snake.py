@@ -12,9 +12,14 @@ import socket, time, math
 from random import randint
 import Image, ImageFont, ImageDraw, sys
 import curses
-import mosquitto
 import threading
 import atexit
+
+highscore_enabled = True
+try:
+    import mosquitt00
+except (NameError, ImportError):
+    highscore_enabled = False
 
 # some static settings:
 settings = {
@@ -102,7 +107,8 @@ def exit_game():
     
 def game_over(score, highscore):
     if highscore < score:
-        mqttc.publish(MQTT_HIGHSCORE_PATH, score, retain=True)
+        if highscore_enabled:
+            mqttc.publish(MQTT_HIGHSCORE_PATH, score, retain=True)
         send(str2image("HS "+str(stats[0])))
     else:
         send(str2image("no HS"))
@@ -128,15 +134,16 @@ def main(win):
     global stdscr
     stdscr = curses.initscr()
 
-    global mqttc
-    global mqtt_loop
-    mqttc = mosquitto.Mosquitto(MQTT_CLIENT_ID, clean_session = True)
-    mqttc.connect("test.mosquitto.org")
-    mqttc.on_message = on_message
-    mqttc.subscribe(MQTT_HIGHSCORE_PATH)
-    mqtt_loop = MqttLoop(mqttc)
-    mqtt_loop.setDaemon(True)
-    mqtt_loop.start()
+    if highscore_enabled:
+        global mqttc
+        global mqtt_loop
+        mqttc = mosquitto.Mosquitto(MQTT_CLIENT_ID, clean_session = True)
+        mqttc.connect("test.mosquitto.org")
+        mqttc.on_message = on_message
+        mqttc.subscribe(MQTT_HIGHSCORE_PATH)
+        mqtt_loop = MqttLoop(mqttc)
+        mqtt_loop.setDaemon(True)
+        mqtt_loop.start()
 
     while True:
         stats[1] += 1
