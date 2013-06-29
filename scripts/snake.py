@@ -26,7 +26,7 @@ UDPPORT=2323
 
 SIZE_Y = 16
 SIZE_X = 40
-FPS = 10
+FPS = 10 
 
 PX = (0,1) # white-on-black = (0,1), black-on-white = (1,0)
 
@@ -113,8 +113,6 @@ def main(win):
             food = (1,[randint(0,SIZE_Y-1),randint(0,SIZE_X-1)])
             if food[1] in snk:
                 food = (0,(0,0))
-            else:
-                set_px(food[1][0], food[1][1], 1) # draw food
 
         if nextpop == True:
             nextpop == False
@@ -139,8 +137,15 @@ def main(win):
             snk[-1][1] %= SIZE_X
         elif snk[-1][0] < 0 or snk[-1][1] < 0 or snk[-1][0] >= SIZE_Y or snk[-1][1] >= SIZE_X:
             game_over()
-        set_pxp(snk[-1],1)
+
+	if food[0] != 0:
+            if stats[1]%2 == 0:
+                set_px(food[1][0], food[1][1], 0) # draw food
+            else:
+                set_px(food[1][0], food[1][1], 1) # draw food
+
         set_px(snk[0][0], snk[0][1], 0) # remove the tail of the snake
+        set_pxp(snk[-1],1)
 
         send(buf)
         time.sleep(1.0/FPS)
