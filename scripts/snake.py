@@ -16,6 +16,8 @@ settings = {
 "COLLIDE_SELF":True,
 # Allow to change bearing by 180° (wich will result in a collision if COLLIDE_SELF == True)
 "ALLOW_180_DEG_BC":False,
+# 
+"WRAP_BORDERS":True
 }
 
 UDPHOSTS=["2001:7f0:3003:cafe:222:f9ff:fe01:c65","2001:7f0:3003:cafe:4be:6b21:90c7:fbd9"]
@@ -50,20 +52,19 @@ def str2image(s):
 
 
 def send(image):
-        print image
-	msg = '';
-	pieces = '';
-	for line in image:
-		pieces += ''.join(str(x) for x in line)
+    msg = '';
+    pieces = '';
+    for line in image:
+        pieces += ''.join(str(x) for x in line)
 
-	pieces = [pieces[i:i+8] for i in range(0, len(pieces), 8)]
+    pieces = [pieces[i:i+8] for i in range(0, len(pieces), 8)]
 
-	for i in pieces:
-		if (len(i) < 8):
-			i = i.ljust(8, '1')
-		msg += chr(int(str(i), 2))
+    for i in pieces:
+        if (len(i) < 8):
+            i = i.ljust(8, '1')
+        msg += chr(int(str(i), 2))
 	
-	sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
+        sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
 buf = [([ PX[0]  for x in xrange(SIZE_X)]) for x in xrange(SIZE_Y)]
 stats=[0,0]
