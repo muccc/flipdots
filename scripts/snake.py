@@ -16,11 +16,11 @@ settings = {
 "COLLIDE_SELF":True,
 # Allow to change bearing by 180° (wich will result in a collision if COLLIDE_SELF == True)
 "ALLOW_180_DEG_BC":False,
-# 
-"WRAP_BORDERS":True
+# Collide with the outer borders or wrap around
+"WRAP_BORDERS":True,
 }
 
-UDPHOSTS=["2001:7f0:3003:cafe:222:f9ff:fe01:c65","2001:7f0:3003:cafe:4be:6b21:90c7:fbd9"]
+UDPHOSTS=["::1","2001:7f0:3003:cafe:222:f9ff:fe01:c65","2001:7f0:3003:cafe:4be:6b21:90c7:fbd9"]
 UDPHOSTC=0
 UDPPORT=2323
 
@@ -75,6 +75,10 @@ def set_px(x,y,v):
 def set_pxp(p,v):
     buf[p[0]][p[1]] = PX[v]
 
+def game_over():
+    send(str2image(str(stats[0]))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
+    sys.exit()
+
 def main(win):
     global UDPHOSTC
     global stats
@@ -85,6 +89,7 @@ def main(win):
     for p in snk:
        set_px(p[0], p[1], 1)  # paint the snake into the buffer
     nextpop = False
+
     while True:
         stats[1] += 1
         try:
@@ -126,12 +131,14 @@ def main(win):
 
         # crash into ourself
         if settings["COLLIDE_SELF"] and snk[-1] in snk[0:-1]:
-            send(str2image(str(stats[0]))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
-            break
+            game_over()
 
         snk += [ map(lambda x, y: x + y, snk[-1], b) ]
-        snk[-1][0] %= SIZE_Y
-        snk[-1][1] %= SIZE_X
+        if (settings["WRAP_BORDERS"]):
+            snk[-1][0] %= SIZE_Y
+            snk[-1][1] %= SIZE_X
+        elif snk[-1][0] < 0 or snk[-1][1] < 0 or snk[-1][0] >= SIZE_Y or snk[-1][1] >= SIZE_X:
+            game_over()
         set_pxp(snk[-1],1)
         set_px(snk[0][0], snk[0][1], 0) # remove the tail of the snake
 
