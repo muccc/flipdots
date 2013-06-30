@@ -205,7 +205,7 @@ def main(win):
         # place a piece of food if the choosen coordinates are free
         if randint(0,100) > 50 and 0 == food[0]:
             food = (1,[randint(0,SIZE_Y-1),randint(0,SIZE_X-1)])
-            if food[1] in snk:
+            if food[1] in snk and "W" == lvl["board"][food[1][1]][food[1][0]]:
                 food = (0,(0,0))
 
         if nextpop == True:
@@ -232,6 +232,7 @@ def main(win):
         elif snk[-1][0] < 0 or snk[-1][1] < 0 or snk[-1][0] >= SIZE_Y or snk[-1][1] >= SIZE_X:
             game_over(stats[0], highscore)
 
+        # render blinkenfood
 	if food[0] != 0:
             if stats[1]%2 == 0:
                 set_px(food[1][0], food[1][1], 0) # draw food
