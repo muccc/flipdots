@@ -52,7 +52,7 @@ UDPPORT=2323
 
 SIZE_Y = 16
 SIZE_X = 40
-FPS = 10 
+FPS = 10
 
 PX = (0,1) # white-on-black = (0,1), black-on-white = (1,0)
 
@@ -70,7 +70,7 @@ sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
 
 class MqttLoop(threading.Thread):
     def __init__(self, mqtt_client):
-        threading.Thread.__init__(self) 
+        threading.Thread.__init__(self)
         self.client = mqtt_client
 
     def run(self):
@@ -93,7 +93,7 @@ def str2image(s):
     return [imgmap[i*SIZE_X:i*SIZE_X+SIZE_X] for i in range(len(imgmap)/SIZE_X)]
 
 
-def send(image):    
+def send(image):
     msg = '';
     pieces = '';
     for line in image:
@@ -105,7 +105,7 @@ def send(image):
         if (len(i) < 8):
             i = i.ljust(8, '1')
         msg += chr(int(str(i), 2))
-	
+
     sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
 lvl = json.loads(open('lvl/40_16/splitbrain','r').read())
@@ -124,7 +124,7 @@ def exit_game():
 
 def show_stats():
     send(str2image(str(stats[0])+"/"+str(highscore))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
-    
+
 def game_over(score, highscore):
     show_stats()
     if highscore < score and highscore_enabled:
@@ -159,11 +159,10 @@ def main(win):
     food = (0,[0,0])
     #snk = [[3,5],[3,6],[3,7],[3,8]]
     snk = init_snk()
-    
+
     for p in snk:
        set_px(p[0], p[1], 1)  # paint the snake into the buffer
 
-    
     nextpop = False
 
     global stdscr
@@ -233,8 +232,8 @@ def main(win):
             game_over(stats[0], highscore)
 
         # render blinkenfood
-	if food[0] != 0:
-            if stats[1]%2 == 0:
+        if food[0] != 0:
+            if stats[1]%4 < 2:
                 set_px(food[1][0], food[1][1], 0) # draw food
             else:
                 set_px(food[1][0], food[1][1], 1) # draw food
