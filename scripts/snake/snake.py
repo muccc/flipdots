@@ -1,9 +1,23 @@
 #!env python
 # -*- coding: utf-8 -*-
 #
-# Snake Game
+# Python Snake Game
 # 
-# Use arrow keys to change direction and n to play on the next host
+# Usage:
+#
+# arrow keys to change direction
+# n to play on the next host of UDPHOSTS
+# s for statistics: apples eaten / highscore \n steps moved
+# 
+# 
+# Map files are json objects with the keys "dir" and "board"
+#  "dir": direction vector
+#  "board": array of strings in the matrix dimension
+#    currently supported bytes: 'W', ' ', '0'
+#    ' ': no wall
+#    'W': wall
+#    '0': part of the body of player 0
+#    other integers are reserved for mutliplayer support
 #
 # To reset highscore $ mosquitto_pub -h test.mosquitto.org -t \
 # "/de/ccc/muc/flipdot/snake/highscore" -n -r
@@ -107,9 +121,12 @@ def set_pxp(p,v):
 
 def exit_game():
     sys.exit()
+
+def show_stats():
+    send(str2image(str(stats[0])+"/"+str(highscore))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
     
 def game_over(score, highscore):
-    send(str2image(str(stats[0])+"/"+str(highscore))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
+    show_stats()
     if highscore < score and highscore_enabled:
         mqttc.publish(MQTT_HIGHSCORE_PATH, score, retain=True)
     exit_game()
@@ -125,7 +142,7 @@ def init_snk():
     snk=[]
     for line in lvl["board"]:
         for c in line:
-            if "1" == c: # the level format indicates 1 as body for player 1, so currently only 1 player is supported
+            if "0" == c: # the level format indicates 0 as body for player 0, so currently only 1 player is supported
                 print x,y
                 snk.append([y,x])
             x+=1
@@ -177,10 +194,13 @@ def main(win):
             b = (0,1)
         elif key == "KEY_LEFT" and not (b == (0,1) and not settings["ALLOW_180_DEG_BC"]):
             b = (0,-1)
-        elif key == "n":
+        elif "n" == key:
             UDPHOSTC=(UDPHOSTC+1) % len(UDPHOSTS)
-        elif key == "q":
+        elif "q" == key:
             exit_game()
+        elif "s" == key:
+            show_stats()
+            time.sleep(1)
 
         # place a piece of food if the choosen coordinates are free
         if randint(0,100) > 50 and 0 == food[0]:
