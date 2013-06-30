@@ -205,7 +205,7 @@ def main(win):
         # place a piece of food if the choosen coordinates are free
         if randint(0,100) > 50 and 0 == food[0]:
             food = (1,[randint(0,SIZE_Y-1),randint(0,SIZE_X-1)])
-            if food[1] in snk and "W" == lvl["board"][food[1][1]][food[1][0]]:
+            if food[1] in snk and "W" != lvl["board"][food[1][0]][food[1][1]]:
                 food = (0,(0,0))
 
         if nextpop == True:
