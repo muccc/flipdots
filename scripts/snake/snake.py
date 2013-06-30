@@ -9,6 +9,7 @@ import socket, time, math
 from random import randint
 import Image, ImageFont, ImageDraw, sys
 import curses
+import json
 
 # some static settings:
 settings = {
@@ -66,7 +67,9 @@ def send(image):
 	
     sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
-buf = [([ PX[0]  for x in xrange(SIZE_X)]) for x in xrange(SIZE_Y)]
+lvl = json.loads(open('lvl/40_16/bottleneck','r').read())
+buf = [([ PX[1] if lvl["board"][y][x] == "W" else PX[0] for x in xrange(SIZE_X)]) for y in xrange(SIZE_Y)]
+
 stats=[0,0]
 
 def set_px(x,y,v):
@@ -79,15 +82,32 @@ def game_over():
     send(str2image(str(stats[0]))[0:SIZE_Y/2] + str2image(str(stats[1]))[0:SIZE_Y/2] )
     sys.exit()
 
+def init_snk():
+    x,y = 0,0
+    snk=[]
+    for line in lvl["board"]:
+        for c in line:
+            if "1" == c: # the level format indicates 1 as body for player 1, so currently only 1 player is supported
+                print x,y
+                snk.append([y,x])
+            x+=1
+        x=0
+        y+=1
+    return snk
+
 def main(win):
     global UDPHOSTC
     global stats
     win.nodelay(True) # make getkey() not wait
-    b = (1,1)
+    b = tuple(lvl["dir"])
     food = (0,[0,0])
-    snk = [[3,5],[3,6],[3,7],[3,8]]
+    #snk = [[3,5],[3,6],[3,7],[3,8]]
+    snk = init_snk()
+    
     for p in snk:
        set_px(p[0], p[1], 1)  # paint the snake into the buffer
+
+    
     nextpop = False
 
     while True:
@@ -109,7 +129,7 @@ def main(win):
             UDPHOSTC=(UDPHOSTC+1) % len(UDPHOSTS)
 
         # place a piece of food if the choosen coordinates are free
-        if randint(0,100) > 50 and food[0] == 0:
+        if randint(0,100) > 50 and 0 == food[0]:
             food = (1,[randint(0,SIZE_Y-1),randint(0,SIZE_X-1)])
             if food[1] in snk:
                 food = (0,(0,0))
@@ -121,7 +141,7 @@ def main(win):
             set_pxp(snk.pop(0),0)
 
         # eat the food
-        if snk[-1] == food[1] and food[0] == 1:
+        if snk[-1] == food[1] and 1 == food[0]:
             stats[0] += 1
             food = (0,(0,0))
             # avoid the impression of stalling while eating
@@ -141,6 +161,10 @@ def main(win):
             game_over()
         set_pxp(snk[-1],1)
         set_px(snk[0][0], snk[0][1], 0) # remove the tail of the snake
+
+        # crash into walls
+        if lvl["board"][snk[-1][0]][snk[-1][1]] == "W":
+            game_over()
 
         send(buf)
         time.sleep(1.0/FPS)
