@@ -191,11 +191,11 @@ def main(win):
 
     global stdscr
     stdscr = curses.initscr()
+    paused = False
 
     if highscore_enabled:
         global mqttc
         global mqtt_loop
-        paused = False
         mqttc = mosquitto.Mosquitto(MQTT_CLIENT_ID, clean_session = True)
         mqttc.connect("test.mosquitto.org")
         mqttc.on_message = on_message
