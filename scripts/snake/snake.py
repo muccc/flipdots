@@ -19,6 +19,7 @@
 #    'W': wall
 #    '0': part of the body of player 0
 #    other integers are reserved for mutliplayer support
+#    currently the snake can't be wrapped around the borders
 #
 # settings are stored in a file settings
 # if this file doesn't exist, it will be created with default settings
@@ -119,6 +120,18 @@ def send(image):
 
     sock.sendto(msg, (settings["UDPHOSTS"][udphostc], UDPPORT))
 
+def save_settings():
+    fd = open('settings',"w")
+    json.dump(settings,fd,indent=2)
+
+def load_settings():
+    global settings
+    try:
+        settings = json.load(open('settings','r'))
+    except IOError:
+        save_settings()
+
+load_settings()
 lvl = json.load(open('lvl/%i_%i/%s' % (SIZE_X,SIZE_Y,settings["MAP"]),'r'))
 buf = [([ PX[1] if lvl["board"][y][x] == "W" else PX[0] for x in xrange(SIZE_X)]) for y in xrange(SIZE_Y)]
 
@@ -149,17 +162,6 @@ def on_message(mosq, obj, msg):
     global highscore # makes it shared
     highscore = int(msg.payload)
 
-def save_settings():
-    fd = open('settings',"w")
-    json.dump(settings,fd,indent=2)
-
-def load_settings():
-    global settings
-    try:
-        settings = json.load(open('settings','r'))
-    except IOError:
-        save_settings()
-
 def init_snk():
     x,y = 0,0
     snk=[]
@@ -177,7 +179,6 @@ def main(win):
     curses.use_default_colors()
     global udphostc
     global stats
-    load_settings()
     win.nodelay(True) # make getkey() not wait
     b = tuple(lvl["dir"])
     food = (0,[0,0])
@@ -239,6 +240,7 @@ def main(win):
 
         if nextpop == True:
             nextpop == False
+            #if snk[-1] != snk[0]:
             set_pxp(snk.pop(0),0)
 
         # eat the food
@@ -250,15 +252,15 @@ def main(win):
         else:
             nextpop = True
 
-        # crash into ourself
-        if settings["COLLIDE_SELF"] and snk[-1] in snk[0:-1]:
-            game_over(stats[0], highscore)
-
         snk += [ map(lambda x, y: x + y, snk[-1], b) ]
         if (settings["WRAP_BORDERS"]):
             snk[-1][0] %= SIZE_Y
             snk[-1][1] %= SIZE_X
         elif snk[-1][0] < 0 or snk[-1][1] < 0 or snk[-1][0] >= SIZE_Y or snk[-1][1] >= SIZE_X:
+            game_over(stats[0], highscore)
+
+        # crash into ourself
+        if settings["COLLIDE_SELF"] and snk[-1] in snk[0:-1]:
             game_over(stats[0], highscore)
 
         # render blinkenfood
@@ -268,7 +270,8 @@ def main(win):
             else:
                 set_px(food[1][0], food[1][1], 1) # draw food
 
-        set_px(snk[0][0], snk[0][1], 0) # remove the tail of the snake
+        #seems redundant
+        #set_px(snk[0][0], snk[0][1], 0) # remove the tail of the snake
         set_pxp(snk[-1],1)
 
         # crash into walls
