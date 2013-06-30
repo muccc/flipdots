@@ -108,7 +108,7 @@ def send(image):
 	
     sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
-lvl = json.loads(open('lvl/40_16/bottleneck','r').read())
+lvl = json.loads(open('lvl/40_16/highway','r').read())
 buf = [([ PX[1] if lvl["board"][y][x] == "W" else PX[0] for x in xrange(SIZE_X)]) for y in xrange(SIZE_Y)]
 
 stats=[0,0]
@@ -205,7 +205,7 @@ def main(win):
         # place a piece of food if the choosen coordinates are free
         if randint(0,100) > 50 and 0 == food[0]:
             food = (1,[randint(0,SIZE_Y-1),randint(0,SIZE_X-1)])
-            if food[1] in snk and "W" != lvl["board"][food[1][0]][food[1][1]]:
+            if food[1] in snk or "W" == lvl["board"][food[1][0]][food[1][1]]:
                 food = (0,(0,0))
 
         if nextpop == True:
@@ -243,7 +243,7 @@ def main(win):
         set_pxp(snk[-1],1)
 
         # crash into walls
-        if lvl["board"][snk[-1][0]][snk[-1][1]] == "W":
+        if "W" == lvl["board"][snk[-1][0]][snk[-1][1]]:
             game_over(stats[0],highscore)
 
         send(buf)
