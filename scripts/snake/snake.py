@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 # Python Snake Game
-# 
+#
 # Usage:
 #
 # arrow keys to change direction
 # n to play on the next host of UDPHOSTS
 # s for statistics: apples eaten / highscore \n steps moved
-# 
-# 
+#
+#
 # Map files are json objects with the keys "dir" and "board"
 #  "dir": direction vector
 #  "board": array of strings in the matrix dimension
@@ -18,6 +18,10 @@
 #    'W': wall
 #    '0': part of the body of player 0
 #    other integers are reserved for mutliplayer support
+#
+# settings are stored in a file settings
+# if this file doesn't exist, it will be created with default settings
+# delete the file if new versions have new settings
 #
 # To reset highscore $ mosquitto_pub -h test.mosquitto.org -t \
 # "/de/ccc/muc/flipdot/snake/highscore" -n -r
@@ -37,22 +41,28 @@ except (NameError, ImportError):
     highscore_enabled = False
 
 # some static settings:
+global settings
 settings = {
 # Game over if the snake head collides into its own body
 "COLLIDE_SELF":True,
 # Allow to change bearing by 180° (wich will result in a collision if COLLIDE_SELF == True)
-"ALLOW_180_DEG_BC":False,
+"ALLOW_180_DEG_DC":False,
 # Collide with the outer borders or wrap around
 "WRAP_BORDERS":True,
+
+# List of UDP hosts you can cycle through with n
+"UDPHOSTS":["::1","2001:7f0:3003:cafe:222:f9ff:fe01:c65","2001:7f0:3003:cafe:4be:6b21:90c7:fbd9"],
+# Frames per second
+"FPS": 10,
+# map to load, filename must exist in directory lvl/SIZE_X_SIZE_Y/
+"MAP": "classic"
 }
 
-UDPHOSTS=["::1","2001:7f0:3003:cafe:222:f9ff:fe01:c65","2001:7f0:3003:cafe:4be:6b21:90c7:fbd9"]
-UDPHOSTC=0
+udphostc=0
 UDPPORT=2323
 
 SIZE_Y = 16
 SIZE_X = 40
-FPS = 10
 
 PX = (0,1) # white-on-black = (0,1), black-on-white = (1,0)
 
@@ -106,9 +116,9 @@ def send(image):
             i = i.ljust(8, '1')
         msg += chr(int(str(i), 2))
 
-    sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
+    sock.sendto(msg, (settings["UDPHOSTS"][udphostc], UDPPORT))
 
-lvl = json.loads(open('lvl/40_16/splitbrain','r').read())
+lvl = json.load(open('lvl/%i_%i/%s' % (SIZE_X,SIZE_Y,settings["MAP"]),'r'))
 buf = [([ PX[1] if lvl["board"][y][x] == "W" else PX[0] for x in xrange(SIZE_X)]) for y in xrange(SIZE_Y)]
 
 stats=[0,0]
@@ -120,6 +130,7 @@ def set_pxp(p,v):
     buf[p[0]][p[1]] = PX[v]
 
 def exit_game():
+    save_settings()
     sys.exit()
 
 def show_stats():
@@ -137,6 +148,17 @@ def on_message(mosq, obj, msg):
     global highscore # makes it shared
     highscore = int(msg.payload)
 
+def save_settings():
+    fd = open('settings',"w")
+    json.dump(settings,fd,indent=2)
+
+def load_settings():
+    global settings
+    try:
+        settings = json.load(open('settings','r'))
+    except IOError:
+        save_settings()
+
 def init_snk():
     x,y = 0,0
     snk=[]
@@ -152,12 +174,12 @@ def init_snk():
 
 def main(win):
     curses.use_default_colors()
-    global UDPHOSTC
+    global udphostc
     global stats
+    load_settings()
     win.nodelay(True) # make getkey() not wait
     b = tuple(lvl["dir"])
     food = (0,[0,0])
-    #snk = [[3,5],[3,6],[3,7],[3,8]]
     snk = init_snk()
 
     for p in snk:
@@ -185,18 +207,18 @@ def main(win):
             key = win.getkey()
         except: # in no delay mode getkey raise and exeption if no key is press 
             key = None
-        if key == "KEY_DOWN" and not (b == (-1,0) and not settings["ALLOW_180_DEG_BC"]):
+        if key == "KEY_DOWN" and not (b == (-1,0) and not settings["ALLOW_180_DEG_DC"]):
             b = (1,0)
-        elif key == "KEY_UP" and not (b == (1,0) and not settings["ALLOW_180_DEG_BC"]):
+        elif key == "KEY_UP" and not (b == (1,0) and not settings["ALLOW_180_DEG_DC"]):
             b = (-1,0)
-        elif key == "KEY_RIGHT" and not (b == (0,-1) and not settings["ALLOW_180_DEG_BC"]):
+        elif key == "KEY_RIGHT" and not (b == (0,-1) and not settings["ALLOW_180_DEG_DC"]):
             b = (0,1)
-        elif key == "KEY_LEFT" and not (b == (0,1) and not settings["ALLOW_180_DEG_BC"]):
+        elif key == "KEY_LEFT" and not (b == (0,1) and not settings["ALLOW_180_DEG_DC"]):
             b = (0,-1)
         elif "n" == key:
-            UDPHOSTC=(UDPHOSTC+1) % len(UDPHOSTS)
+            udphostc=(udphostc+1) % len(settings["UDPHOSTS"])
         elif "q" == key:
-            exit_game()
+            game_over(stats[0], highscore)
         elif "s" == key:
             show_stats()
             time.sleep(1)
@@ -246,7 +268,7 @@ def main(win):
             game_over(stats[0],highscore)
 
         send(buf)
-        time.sleep(1.0/FPS)
+        time.sleep(1.0/settings["FPS"])
 
 #a wrapper to create a window, and clean up at the end
 curses.wrapper(main)
