@@ -96,6 +96,7 @@ def init_snk():
     return snk
 
 def main(win):
+    curses.use_default_colors()
     global UDPHOSTC
     global stats
     win.nodelay(True) # make getkey() not wait
