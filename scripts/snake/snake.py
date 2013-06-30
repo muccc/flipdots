@@ -108,7 +108,7 @@ def send(image):
 	
     sock.sendto(msg, (UDPHOSTS[UDPHOSTC], UDPPORT))
 
-lvl = json.loads(open('lvl/40_16/highway','r').read())
+lvl = json.loads(open('lvl/40_16/splitbrain','r').read())
 buf = [([ PX[1] if lvl["board"][y][x] == "W" else PX[0] for x in xrange(SIZE_X)]) for y in xrange(SIZE_Y)]
 
 stats=[0,0]

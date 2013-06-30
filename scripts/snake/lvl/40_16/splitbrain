@@ -1,0 +1,22 @@
+{
+"board":[
+"                    W                   ",
+"                    W                   ",
+"                    W                   ",
+"                    W                   ",
+"                    W                   ",
+"                    W   000             ",
+"                    W                   ",
+"WWWWWWWWWWWWWWWWWWWWW                   ",
+"                   WWWWWWWWWWWWWWWWWWWWW",
+"                   W                    ",
+"                   W                    ",
+"                   W                    ",
+"                   W                    ",
+"                   W                    ",
+"                   W                    ",
+"                   W                    "
+],
+"dir":[0,1]
+}
+
