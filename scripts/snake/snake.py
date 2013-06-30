@@ -8,6 +8,7 @@
 # arrow keys to change direction
 # n to play on the next host of UDPHOSTS
 # s for statistics: apples eaten / highscore \n steps moved
+# p for pause
 #
 #
 # Map files are json objects with the keys "dir" and "board"
@@ -193,6 +194,7 @@ def main(win):
     if highscore_enabled:
         global mqttc
         global mqtt_loop
+        paused = False
         mqttc = mosquitto.Mosquitto(MQTT_CLIENT_ID, clean_session = True)
         mqttc.connect("test.mosquitto.org")
         mqttc.on_message = on_message
@@ -202,7 +204,6 @@ def main(win):
         mqtt_loop.start()
 
     while True:
-        stats[1] += 1
         try:
             key = win.getkey()
         except: # in no delay mode getkey raise and exeption if no key is press 
@@ -222,6 +223,13 @@ def main(win):
         elif "s" == key:
             show_stats()
             time.sleep(1)
+        elif "p" == key:
+            paused = not paused
+
+        if paused:
+            continue
+
+        stats[1] += 1
 
         # place a piece of food if the choosen coordinates are free
         if randint(0,100) > 50 and 0 == food[0]:
