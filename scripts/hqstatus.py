@@ -20,7 +20,7 @@ class HqStatusFlipdotAdapter(object):
         self.showStatusText(hqstatus)   
         
     def showStatusText(self, hqstatus):
-        self.__flipdotMatrix.showBlitText(hqstatus)
+        self.__flipdotMatrix.showText(hqstatus)
         
     def run(self):
         while True:
