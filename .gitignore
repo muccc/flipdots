@@ -12,4 +12,7 @@ Gemfile.lock
 .rvmrc
 tmp/
 Gemfile.lock
+.project
+.pydevproject
+*.py[cod]
 
