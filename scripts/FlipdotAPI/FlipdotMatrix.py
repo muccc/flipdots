@@ -118,7 +118,7 @@ class FlipdotImage(object):
         
         letterImage = self.__getLetterImageForNextLetter(text)
         
-        if autoLineBreak and self.__isLineBreakRequired(letterImage, xPos):
+        if self.__isLineBreakRequired(text, autoLineBreak, letterImage, xPos):
             xPos = __indentXPos
             yPos = yPos + font8px["lineheight"]
             
@@ -126,9 +126,16 @@ class FlipdotImage(object):
         
         nextLetterXPos = xPos + letterImage.width + font8px["whitespace"]
         self.blitTextAtPosition(text[1:], autoLineBreak, nextLetterXPos, yPos, __indentXPos)
-        
+    
+    def __isLineBreakRequired(self, text, autoLineBreak, letterImage, xPos):
+        if text[:1] == "\n":
+            return True
+        elif autoLineBreak and self.__isEndOfLineReached(letterImage, xPos):
+            return True
+        else:
+            return False
                 
-    def __isLineBreakRequired(self, letterImage, xPos):
+    def __isEndOfLineReached(self, letterImage, xPos):
         return letterImage.width > self.width-xPos
 
     def __getLetterImageForNextLetter(self, text):
