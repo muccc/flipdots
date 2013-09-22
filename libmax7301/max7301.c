@@ -116,6 +116,11 @@ void max7301_flush_history(void)
                         }
                     }
                 }
+                // We have not yet looked at this pin and the for loop
+                // will increment pin again, so we have to decrement pin
+                // here first.
+                pin--;
+
                 DEBUG("transfers_list[%d] := %d\n", transfers_count, data);
                 transfers_list[transfers_count++] = data;
             }
