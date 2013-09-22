@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cat /etc/modprobe.d/raspi-blacklist.conf | sed 's/^\(blacklist spi-bcm2708\)/#\1/' > /tmp/blacklist.conf
+cp /tmp/blacklist.conf /etc/modprobe.d/raspi-blacklist.conf
+
+echo "spi-bcm2708" >> /etc/modules
+echo "KERNEL==\"spidev0\.[0-9]*\", GROUP=\"spi\"" >>  /etc/udev/rules.d/10-local.rules
+groupadd spi
+usermod -a -G spi pi
+
+echo "please reboot the system"

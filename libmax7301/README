@@ -1,0 +1,72 @@
+Available functions:
+
+`void max7301_init(int max_history_size, bool debug)`
+    Initialize the chip.
+
+    max_history_size: maximum number of transfers to buffer,
+    before they are sent automatically. Do not use a number > 100
+
+    debug: set to true to enable printf debugging
+
+`void max7301_set_pin_as_output(int pin)`
+    Set a pin as output
+
+`void max7301_set_pin_as_input(int pin, bool pull up)`
+    Set a pin as input
+
+`int max7301_get_pin(int pin)`
+    Get the value of an input pin.
+
+    Return 0 or 1
+
+`void max7301_set_pin(int pin, int value)`
+    Set a pin to a specific value
+
+    value: 0 or 1
+
+    The pin does not get set immediately. Instead the write is buffered.
+
+`void max7301_step(void)`
+    Commits the current buffered state as a step and creates a
+    new step in the history.
+
+`void max7301_flush_history(void)`
+    Sends all steps of the history to the MAX7301 and reset the history.
+
+
+Example:
+```
+    max7301_init(2, false);
+    max7301_set_pin_as_output(4);
+    max7301_set_pin_as_output(10);
+
+    max7301_set_pin(4,0);
+    max7301_set_pin(10,1);
+    max7301_step();
+
+    max7301_set_pin(4,0);   // Will be ignored.
+    max7301_set_pin(10,1);
+    max7301_set_pin(4,1);
+    max7301_step();         // Causes an automatic flush
+
+    max7301_set_pin(10,0);
+    max7301_set_pin(4,0);
+    max7301_step();
+
+    max7301_flush_history();    // Manual flush
+```
+
+Result:
+```
+             _______
+    4   ____/       \____
+           _________
+    10  __/         \____
+
+    Time ----------------->
+```
+
+Notice the much larger time gap between the second and third write.
+Setting up and finishing a flush takes a considerable amount of time.
+
+
