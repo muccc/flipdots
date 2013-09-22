@@ -13,7 +13,7 @@ libmax7301.a: max7301.o
 	$(AR) rcs libmax7301.a max7301.o
 
 clean:
-	rm -f *.o max7301-test
+	rm -f *.o max7301-test *.a
 
 install: libmax7301.a
 	cp libmax7301.a max7301.h /usr/local/lib

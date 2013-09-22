@@ -12,7 +12,7 @@ libsimplespi.a: simplespi.o
 	$(AR) rcs libsimplespi.a simplespi.o
 
 clean:
-	rm -f *.o simplespi-test
+	rm -f *.o simplespi-test *.a
 
 install: libsimplespi.a
 	cp libsimplespi.a /usr/local/lib
