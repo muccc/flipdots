@@ -16,7 +16,8 @@ clean:
 	rm -f *.o max7301-test *.a
 
 install: libmax7301.a
-	cp libmax7301.a max7301.h /usr/local/lib
+	cp libmax7301.a /usr/local/lib
+	cp max7301.h /usr/local/include
 
 .PHONY:
 	clean all install
