@@ -36,20 +36,20 @@ extern int usleep (__useconds_t __useconds);
 #define CLEARBIT(x,i) x[i>>3]&=(1<<(i&7))^0xFF;
 
 #define DATA(reg)								\
-	((reg == ROW) ? DATA_ROW : DATA_COL)
+	((reg == ROW) ? pinning[active_pinning].data_row : pinning[active_pinning].data_col)
 #define CLK(reg)								\
-	((reg == ROW) ? CLK_ROW : CLK_COL)
+	((reg == ROW) ? pinning[active_pinning].clk_row : pinning[active_pinning].clk_col)
 #define OE(reg)									\
 	((reg == ROW) ? OE_ROW : OE_COL)
 
 #define LEN(a)									\
 	(sizeof(a)/sizeof(a[0]))
 
-static uint8_t buffer_a[DISP_BYTE_COUNT];
-static uint8_t buffer_b[DISP_BYTE_COUNT];
-static uint8_t buffer_to_0[DISP_BYTE_COUNT];
-static uint8_t buffer_to_1[DISP_BYTE_COUNT];
-static uint8_t *buffer_new, *buffer_old;
+static uint8_t buffer_a[4][DISP_BYTE_COUNT];
+static uint8_t buffer_b[4][DISP_BYTE_COUNT];
+static uint8_t buffer_to_0[4][DISP_BYTE_COUNT];
+static uint8_t buffer_to_1[4][DISP_BYTE_COUNT];
+static uint8_t *buffer_new[4], *buffer_old[4];
 
 static void sreg_push_bit(enum sreg reg, uint8_t bit);
 static void sreg_fill(enum sreg reg, uint8_t *data, int count);
@@ -67,30 +67,44 @@ static void map_two_buffers(uint8_t (*fun)(uint8_t, uint8_t), uint8_t a[], uint8
 
 static void display_frame_differential(uint8_t *to_0, uint8_t *to_1);
 
+flipdot_pinning pinning[4] = {
+    {.data_col = 10, .data_row = 8, .strobe = 6, .oe_white = 9, .oe_black = 7, .clk_col = 4, .clk_row = 5},
+    {.data_col = 17, .data_row = 15, .strobe = 13, .oe_white = 16, .oe_black = 14, .clk_col = 11, .clk_row = 12},
+    {.data_col = 24, .data_row = 22, .strobe = 20, .oe_white = 23, .oe_black = 21, .clk_col = 18, .clk_row = 19},
+    {.data_col = 31, .data_row = 29, .strobe = 27, .oe_white = 30, .oe_black = 28, .clk_col = 25, .clk_row = 26},
+};
+
+int active_pinning = 3;
+
 void
 flipdot_init(void)
 {
     max7301_init(100, false);
 
 	/* init pins */
-    max7301_set_pin_as_output(DATA_COL);
-    max7301_set_pin_as_output(DATA_ROW);
-    max7301_set_pin_as_output(STROBE);
-    max7301_set_pin_as_output(OE_WHITE);
-    max7301_set_pin_as_output(OE_BLACK);
-    max7301_set_pin_as_output(CLK_COL);
-    max7301_set_pin_as_output(CLK_ROW);
+    int i;
+    for(i = 0; i < 4; i++) {
+        active_pinning = i;
+        max7301_set_pin_as_output(pinning[i].data_col);
+        max7301_set_pin_as_output(pinning[i].data_row);
+        max7301_set_pin_as_output(pinning[i].strobe);
+        max7301_set_pin_as_output(pinning[i].oe_white);
+        max7301_set_pin_as_output(pinning[i].oe_black);
+        max7301_set_pin_as_output(pinning[i].clk_col);
+        max7301_set_pin_as_output(pinning[i].clk_row);
 
-	/* Init buffer pointers */
-	buffer_new = buffer_a;
-	buffer_old = buffer_b;
+        /* Init buffer pointers */
+        buffer_new[active_pinning] = buffer_a[active_pinning];
+        buffer_old[active_pinning] = buffer_b[active_pinning];
 
-	/* Synchronize buffers and flipdot pixel state */
-	memset(buffer_new, 0xFF, DISP_BYTE_COUNT);
-	memset(buffer_old, 0x00, DISP_BYTE_COUNT);
-	flipdot_data(buffer_old, DISP_BYTE_COUNT);
-	flipdot_data(buffer_old, DISP_BYTE_COUNT);
-	flipdot_data(buffer_old, DISP_BYTE_COUNT);
+        /* Synchronize buffers and flipdot pixel state */
+        memset(buffer_new[active_pinning], 0xFF, DISP_BYTE_COUNT);
+        memset(buffer_old[active_pinning], 0x00, DISP_BYTE_COUNT);
+        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
+        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
+        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
+
+    }
 }
 
 void
@@ -98,16 +112,16 @@ flipdot_data(uint8_t *frame, uint16_t size)
 {
 	uint8_t *tmp;
 	
-	memcpy(buffer_old, frame, size); /* Copy frame into buffer with old data */
+	memcpy(buffer_old[active_pinning], frame, size); /* Copy frame into buffer with old data */
 
-	tmp = buffer_old;				 /* swap pointers buffer_new and buffer_old */
-	buffer_old = buffer_new;
-	buffer_new = tmp;
+	tmp = buffer_old[active_pinning];				 /* swap pointers buffer_new[active_pinning] and buffer_old[active_pinning] */
+	buffer_old[active_pinning] = buffer_new[active_pinning];
+	buffer_new[active_pinning] = tmp;
 	
-	map_two_buffers(diff_to_0, buffer_old, buffer_new, buffer_to_0, DISP_BYTE_COUNT);
-	map_two_buffers(diff_to_1, buffer_old, buffer_new, buffer_to_1, DISP_BYTE_COUNT);
+	map_two_buffers(diff_to_0, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_0[active_pinning], DISP_BYTE_COUNT);
+	map_two_buffers(diff_to_1, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_1[active_pinning], DISP_BYTE_COUNT);
 
-	display_frame_differential(buffer_to_0, buffer_to_1);
+	display_frame_differential(buffer_to_0[active_pinning], buffer_to_1[active_pinning]);
 }
 
 static void
@@ -206,11 +220,11 @@ sreg_fill_row(uint8_t *data, int count)
 static void
 strobe(void)
 {
-    max7301_set_pin(STROBE, 1);
+    max7301_set_pin(pinning[active_pinning].strobe, 1);
     //max7301_step();
     max7301_flush_history();
 	_delay_us(STROBE_DELAY);
-    max7301_set_pin(STROBE, 0);
+    max7301_set_pin(pinning[active_pinning].strobe, 0);
     //max7301_step();
     max7301_flush_history();
 }
@@ -219,16 +233,16 @@ static void
 flip_white(void)
 {
     max7301_flush_history();
-    max7301_set_pin(OE_BLACK, 0);
-    max7301_set_pin(OE_WHITE, 1);
-    max7301_step();
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 1);
+    //max7301_step();
     max7301_flush_history();
 
 	_delay_us(FLIP_DELAY);
 
-    max7301_set_pin(OE_BLACK, 0);
-    max7301_set_pin(OE_WHITE, 0);
-    max7301_step();
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    //max7301_step();
     max7301_flush_history();
 }
 
@@ -236,15 +250,15 @@ static void
 flip_black(void)
 {
     max7301_flush_history();
-    max7301_set_pin(OE_BLACK, 1);
-    max7301_set_pin(OE_WHITE, 0);
-    max7301_step();
+    max7301_set_pin(pinning[active_pinning].oe_black, 1);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    //max7301_step();
     max7301_flush_history();
 
 	_delay_us(FLIP_DELAY);
 
-    max7301_set_pin(OE_BLACK, 0);
-    max7301_set_pin(OE_WHITE, 0);
-    max7301_step();
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    //max7301_step();
     max7301_flush_history();
 }

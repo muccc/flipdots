@@ -33,19 +33,19 @@ enum sreg {
 	COL
 };
 
-#define DATA_COL 	31
-#define DATA_ROW 	29
-#define STROBE 		27
-
-#define OE_WHITE 	30
-#define OE_BLACK	28
-
-#define CLK_COL		25
-#define CLK_ROW		26
+typedef struct {
+    int data_col;
+    int data_row;
+    int strobe;
+    int oe_white;
+    int oe_black;
+    int clk_col;
+    int clk_row;
+} flipdot_pinning;
 
 #define CLK_DELAY  1			/* us */
-#define FLIP_DELAY 850			/* us */
-#define STROBE_DELAY 1			/* us */
+#define FLIP_DELAY 1800			/* us */
+#define STROBE_DELAY 5			/* us */
 
 #define MODULE_COUNT 7
 

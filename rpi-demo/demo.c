@@ -1,5 +1,5 @@
 #include "flipdot.h"
-
+extern int active_pinning;
 int main(void)
 {
     flipdot_init();
@@ -13,7 +13,10 @@ int main(void)
         }
         //d = 255 - d;
         d++;
-        flipdot_data(data, sizeof(data));
+        for(i = 1; i < 4; i++) {
+            active_pinning = i;
+            flipdot_data(data, sizeof(data));
+        }
         //volatile uint32_t x;
         //for(x=0; x<10000000; x++);
         //for(x=0; x<10000000; x++);
