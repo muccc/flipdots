@@ -172,9 +172,7 @@ sreg_push_bit(enum sreg reg, uint8_t bit)
     max7301_step();
     max7301_set_pin(CLK(reg), 1);
     max7301_step();
-	//_delay_us(CLK_DELAY);		/* Wait */
     max7301_set_pin(CLK(reg), 0);
-    max7301_step();
 }
 
 static void
@@ -221,11 +219,9 @@ static void
 strobe(void)
 {
     max7301_set_pin(pinning[active_pinning].strobe, 1);
-    //max7301_step();
     max7301_flush_history();
-	_delay_us(STROBE_DELAY);
+	//_delay_us(STROBE_DELAY);
     max7301_set_pin(pinning[active_pinning].strobe, 0);
-    //max7301_step();
     max7301_flush_history();
 }
 
@@ -235,14 +231,12 @@ flip_white(void)
     max7301_flush_history();
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 1);
-    //max7301_step();
     max7301_flush_history();
 
 	_delay_us(FLIP_DELAY);
 
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    //max7301_step();
     max7301_flush_history();
 }
 
@@ -252,13 +246,11 @@ flip_black(void)
     max7301_flush_history();
     max7301_set_pin(pinning[active_pinning].oe_black, 1);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    //max7301_step();
     max7301_flush_history();
 
 	_delay_us(FLIP_DELAY);
 
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    //max7301_step();
     max7301_flush_history();
 }
