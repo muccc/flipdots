@@ -154,11 +154,11 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 		SETBIT(row_select, row);			   /* Set selected row */
 		sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
 		
-		sreg_fill(ROW, row_data_to_0, REGISTER_COLS); /* Fill row to 0 shift register */
+		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
 		strobe();
 	    flip_black();
 
-		sreg_fill(ROW, row_data_to_1, REGISTER_COLS); /* Fill row to 1 shift register */
+		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
 		strobe();
 		flip_white();
 	}
@@ -199,20 +199,27 @@ sreg_fill_col(uint8_t *data, int count)
 static void
 sreg_fill_row(uint8_t *data, int count)
 {
-	/* This is necessary because the row
-	 * register has 4 unmapped bits */
-	count -= ROW_GAP;
-	int i = 0;
-	int halt_count = 0;
-	while (i < count) {
-		if (i > MODULE_COLS && halt_count < ROW_GAP) {
-			++halt_count;
-			--i;
-		}
-		/* count-i-1 because the first bit needs to go last */
-		sreg_push_bit(ROW, ISBITSET(data, (count-i-1)));
-		++i;
-	}
+    /* This is necessary because the row
+	* register has 4 unmapped bits */
+    int i;
+
+    // Send 4 extra bits at the beginnig
+    int c = 20;
+
+    for(i = 0; i < count; i++) {
+        if(c == 20) {
+            // 20 bits have been pushed, send the 4
+            // extra bits now.
+            sreg_push_bit(ROW, 0);
+            sreg_push_bit(ROW, 0);
+            sreg_push_bit(ROW, 0);
+            sreg_push_bit(ROW, 0);
+            c = 0;
+        }
+        /* count-i-1 because the first bit needs to go last */
+        sreg_push_bit(ROW, ISBITSET(data, (count-i-1)));
+        c++;
+    }	
 }
 
 static void

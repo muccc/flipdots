@@ -24,10 +24,6 @@
 
 #include <stdint.h>
 
-#ifndef F_CPU
-#define F_CPU 16000000
-#endif
-
 enum sreg {
 	ROW,
 	COL
@@ -43,11 +39,10 @@ typedef struct {
     int clk_row;
 } flipdot_pinning;
 
-#define CLK_DELAY  1			/* us */
 #define FLIP_DELAY 1800			/* us */
-#define STROBE_DELAY 5			/* us */
+#define STROBE_DELAY 0			/* us */
 
-#define MODULE_COUNT 7
+#define MODULE_COUNT 6
 
 #define MODULE_ROWS 16
 #define MODULE_COLS 20
@@ -59,8 +54,6 @@ typedef struct {
 
 #define DISP_COLS   MODULE_COUNT*MODULE_COLS
 #define DISP_ROWS   MODULE_ROWS
-
-#define REGISTER_COLS (MODULE_COUNT*MODULE_COLS + ROW_GAP)
 
 #define DISP_PIXEL_COUNT (DISP_ROWS*DISP_COLS)
 #define DISP_BYTE_COUNT (DISP_PIXEL_COUNT/8)
