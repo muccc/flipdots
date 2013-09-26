@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "turning 24 V OFF"
+echo "turning 24 V ON"
 
 echo "17" > /sys/class/gpio/export
 echo "out" > /sys/class/gpio/gpio17/direction
