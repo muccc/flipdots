@@ -74,6 +74,15 @@ flipdot_pinning pinning[4] = {
     {.data_col = 31, .data_row = 29, .strobe = 27, .oe_white = 30, .oe_black = 28, .clk_col = 25, .clk_row = 26},
 };
 
+static uint8_t flipper[256];
+
+static uint8_t reverse(uint8_t b)
+{
+    b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+    b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+    b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+    return b;
+}
 int active_pinning = 3;
 
 void
@@ -103,16 +112,26 @@ flipdot_init(void)
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
-
     }
+
+    for(i=0; i<256; i++) {
+        flipper[i] = reverse(i);
+    }
+
 }
 
 void
 flipdot_data(uint8_t *frame, uint16_t size)
 {
 	uint8_t *tmp;
-	
+
 	memcpy(buffer_old[active_pinning], frame, size); /* Copy frame into buffer with old data */
+    
+    int i;
+	for(i = 0; i < size; i++) {
+        uint8_t c = buffer_old[active_pinning][i];
+        buffer_old[active_pinning][i] = flipper[c];
+    }
 
 	tmp = buffer_old[active_pinning];				 /* swap pointers buffer_new[active_pinning] and buffer_old[active_pinning] */
 	buffer_old[active_pinning] = buffer_new[active_pinning];
@@ -227,7 +246,7 @@ strobe(void)
 {
     max7301_set_pin(pinning[active_pinning].strobe, 1);
     max7301_flush_history();
-	//_delay_us(STROBE_DELAY);
+	_delay_us(STROBE_DELAY);
     max7301_set_pin(pinning[active_pinning].strobe, 0);
     max7301_flush_history();
 }
@@ -240,7 +259,7 @@ flip_white(void)
     max7301_set_pin(pinning[active_pinning].oe_white, 1);
     max7301_flush_history();
 
-	_delay_us(FLIP_DELAY);
+	_delay_us(FLIP_DELAY_WHITE);
 
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
@@ -255,7 +274,7 @@ flip_black(void)
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
     max7301_flush_history();
 
-	_delay_us(FLIP_DELAY);
+	_delay_us(FLIP_DELAY_BLACK);
 
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
