@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.3">
+<eagle version="6.4">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -7256,9 +7256,11 @@ Source: http://eshop.phoenixcontact.com .. 1729131.pdf</description>
 <segment>
 <pinref part="IC1" gate="G$1" pin="P8"/>
 <wire x1="203.2" y1="182.88" x2="243.84" y2="182.88" width="0.1524" layer="91"/>
-<wire x1="243.84" y1="182.88" x2="243.84" y2="172.72" width="0.1524" layer="91"/>
-<pinref part="FD-A" gate="G$1" pin="17"/>
-<wire x1="243.84" y1="172.72" x2="264.16" y2="172.72" width="0.1524" layer="91"/>
+<pinref part="FD-A" gate="G$1" pin="3"/>
+<wire x1="264.16" y1="190.5" x2="254" y2="190.5" width="0.1524" layer="91"/>
+<wire x1="254" y1="190.5" x2="254" y2="195.58" width="0.1524" layer="91"/>
+<wire x1="254" y1="195.58" x2="243.84" y2="195.58" width="0.1524" layer="91"/>
+<wire x1="243.84" y1="195.58" x2="243.84" y2="182.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -7276,9 +7278,9 @@ Source: http://eshop.phoenixcontact.com .. 1729131.pdf</description>
 <segment>
 <pinref part="FD-A" gate="G$1" pin="15"/>
 <wire x1="264.16" y1="175.26" x2="256.54" y2="175.26" width="0.1524" layer="91"/>
-<wire x1="256.54" y1="175.26" x2="256.54" y2="170.18" width="0.1524" layer="91"/>
-<wire x1="256.54" y1="170.18" x2="241.3" y2="170.18" width="0.1524" layer="91"/>
-<wire x1="241.3" y1="170.18" x2="241.3" y2="177.8" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="175.26" x2="256.54" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="172.72" x2="241.3" y2="172.72" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="172.72" x2="241.3" y2="177.8" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="P10"/>
 <wire x1="241.3" y1="177.8" x2="203.2" y2="177.8" width="0.1524" layer="91"/>
 </segment>
@@ -7305,11 +7307,11 @@ Source: http://eshop.phoenixcontact.com .. 1729131.pdf</description>
 </net>
 <net name="N$10" class="0">
 <segment>
-<pinref part="FD-B" gate="G$1" pin="17"/>
-<wire x1="264.16" y1="139.7" x2="226.06" y2="139.7" width="0.1524" layer="91"/>
-<wire x1="226.06" y1="139.7" x2="226.06" y2="165.1" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="P15"/>
+<wire x1="226.06" y1="157.48" x2="226.06" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="203.2" y1="165.1" x2="226.06" y2="165.1" width="0.1524" layer="91"/>
+<pinref part="FD-B" gate="G$1" pin="3"/>
+<wire x1="264.16" y1="157.48" x2="226.06" y2="157.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$11" class="0">
@@ -7350,11 +7352,13 @@ Source: http://eshop.phoenixcontact.com .. 1729131.pdf</description>
 </net>
 <net name="N$15" class="0">
 <segment>
-<pinref part="FD-C" gate="G$1" pin="17"/>
-<wire x1="264.16" y1="106.68" x2="208.28" y2="106.68" width="0.1524" layer="91"/>
-<wire x1="208.28" y1="106.68" x2="208.28" y2="147.32" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="P22"/>
+<wire x1="208.28" y1="129.54" x2="208.28" y2="147.32" width="0.1524" layer="91"/>
 <wire x1="203.2" y1="147.32" x2="208.28" y2="147.32" width="0.1524" layer="91"/>
+<pinref part="FD-C" gate="G$1" pin="3"/>
+<wire x1="264.16" y1="124.46" x2="254" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="254" y1="124.46" x2="254" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="254" y1="129.54" x2="208.28" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$16" class="0">
@@ -7401,13 +7405,13 @@ Source: http://eshop.phoenixcontact.com .. 1729131.pdf</description>
 </net>
 <net name="N$20" class="0">
 <segment>
-<pinref part="FD-D" gate="G$1" pin="17"/>
-<wire x1="264.16" y1="73.66" x2="187.96" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="187.96" y1="73.66" x2="187.96" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="IC1" gate="G$1" pin="P29"/>
+<wire x1="187.96" y1="91.44" x2="187.96" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="167.64" y1="157.48" x2="152.4" y2="157.48" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="157.48" x2="152.4" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="101.6" x2="187.96" y2="101.6" width="0.1524" layer="91"/>
+<pinref part="FD-D" gate="G$1" pin="3"/>
+<wire x1="264.16" y1="91.44" x2="187.96" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$21" class="0">
