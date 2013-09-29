@@ -29,17 +29,17 @@
 #include <stdint.h>
 
 int sockfd;
-struct sockaddr_in servaddr;
+struct sockaddr_in6 servaddr;
 
 void
 flipdot_net_init (void)
 {
-    sockfd=socket(AF_INET,SOCK_DGRAM,0);
+    sockfd=socket(AF_INET6,SOCK_DGRAM,0);
 
     bzero(&servaddr,sizeof(servaddr));
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr=htonl(INADDR_ANY);
-    servaddr.sin_port=htons(2323);
+    servaddr.sin6_family = AF_INET6;
+    servaddr.sin6_addr = in6addr_any;
+    servaddr.sin6_port=htons(2323);
     bind(sockfd,(struct sockaddr *)&servaddr,sizeof(servaddr));
 }
 
