@@ -1,1 +1,1 @@
-while [ true ]; do netcat -l 83.133.179.134 2323 > foo && ./display foo; done
+while [ true ]; do netcat -6 -l -p 2323 > /tmp/foo-image && ./display /tmp/foo-image; done
