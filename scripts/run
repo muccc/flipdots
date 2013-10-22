@@ -1,0 +1,1 @@
+while [ true ]; do netcat -l 83.133.179.134 2323 > foo && ./display foo; done
