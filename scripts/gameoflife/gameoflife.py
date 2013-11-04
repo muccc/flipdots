@@ -5,10 +5,11 @@ from random import randint
 
 UDPHOST="2001:7f0:3003:cafe:ba27:ebff:fe71:dd32"
 #UDPHOST="fe80::221:6bff:fe4c:6e7c"
+UDPHOSTS=["2001:7f0:3003:cafe:ba27:ebff:fe86:8697","2001:7f0:3003:cafe:ba27:ebff:fe23:60d7","2001:7f0:3003:cafe:ba27:ebff:fe71:dd32"]
 UDPPORT=2323
 
 SIZE_Y = 120
-SIZE_X = 48
+SIZE_X = len(UDPHOSTS)*48
 DELAY =0.5 
 
 #SEEDFILE="lightweight_spaceship"
@@ -108,7 +109,7 @@ def updateUniverse(universe):
 
 
 
-def send(image):
+def send(image,host):
 	msg = '';
 	pieces = '';
 	for line in image:
@@ -121,7 +122,7 @@ def send(image):
 			i = i.ljust(8, '1')
 		msg += chr(int(str(i), 2))
 
-	sock.sendto(msg, (UDPHOST, UDPPORT))
+	sock.sendto(msg, (host, UDPPORT))
 
 def make_buffer(universe):
 
@@ -162,8 +163,11 @@ def main():
 #    u=randomUniverse()
 #    u=loadUniverse(SEEDFILE)
     while True:
-        b=make_buffer(u)
-        send(b)
+        for b in range(len(UDPHOSTS)):
+            buff = make_buffer(u[48*b:48*(b+1)])
+            send(buff,UDPHOSTS[b])
+#        b=make_buffer(u)
+#        send(b,UDPHOST)
         time.sleep(DELAY)
         u = list(updateUniverse(u))
 main()
