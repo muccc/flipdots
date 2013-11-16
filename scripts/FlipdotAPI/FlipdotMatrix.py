@@ -4,9 +4,11 @@ from font import font8px
 class FlipdotMatrix():
     def __init__(self, 
                  udpHostAndPort = ("2001:7f0:3003:cafe:222:f9ff:fe01:c65",2323), 
-                 imageSize=(40, 16)
+                 imageSize=(40, 16),
+                 transposed = False
                  ):
         self.__sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        self.transposed = transposed
         self.udpHostAndPort=udpHostAndPort
         self.flipdotImage = FlipdotImage.newBlackFlipdotImage(imageSize[0], imageSize[1])
     
@@ -24,7 +26,7 @@ class FlipdotMatrix():
     def __showSerializedArrayOfPixels(self, imageArray):
         udpPacket = FlipdotMatrix.__arrayToPacket(imageArray) 
         self.__sendUdpPackage(udpPacket)
-
+    
     def show(self, image):
         """
         send FlipdotImage to display. fills up with black pixels
@@ -41,7 +43,7 @@ class FlipdotMatrix():
         self.__updateFlipdotMatrix()
 
     def __updateFlipdotMatrix(self):
-        serializedImageArray = self.flipdotImage.serializeImageArray()
+        serializedImageArray = self.flipdotImage.serializeImageArray(self.transposed)
         self.__showSerializedArrayOfPixels(serializedImageArray)
     
     def clear(self):
@@ -144,12 +146,23 @@ class FlipdotImage(object):
             nextLetter="?"
         return FlipdotImage(font8px[nextLetter])
 
-    def serializeImageArray(self):
+    def serializeImageArray(self, transposed = False):
+        if transposed:
+            return self.__serializeTransposedImageArray()
+        
         imageArray = []
         for y in range(self.height):
             for x in range(self.width):
                 imageArray.append(self.rowArrayOfLineArraysOfPixels[y][x])
         return imageArray
+
+    def __serializeTransposedImageArray(self):
+        imageArray = []
+        for x in range(self.width):
+            for y in reversed(range(self.height)):
+                imageArray.append(self.rowArrayOfLineArraysOfPixels[y][x])
+        return imageArray
+        
 
     def getLine(self, line):
         return self.rowArrayOfLineArraysOfPixels[line]
@@ -180,8 +193,8 @@ class FlipdotImage(object):
 
 #main
 if (__name__=="__main__"):
-    matrix = FlipdotMatrix()
+    matrix = FlipdotMatrix( udpHostAndPort=("2001:7f0:3003:cafe:ba27:ebff:fe86:8697",2323), imageSize=(48, 120), transposed = True)
     matrix.resetAll()
-    matrix.showText("flip the dots!", True)    
+    matrix.showText("flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots!", True)    
     
     
