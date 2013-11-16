@@ -3,13 +3,17 @@ from font import font8px
 
 class FlipdotMatrix():
     def __init__(self, 
-                 udpHostAndPort = ("2001:7f0:3003:cafe:222:f9ff:fe01:c65",2323), 
-                 imageSize=(40, 16),
-                 transposed = False
+                 udpHostsAndPorts = [("2001:7f0:3003:cafe:ba27:ebff:fe86:8697",2323),
+                                   ("2001:7f0:3003:cafe:ba27:ebff:fe23:60d7", 2323),
+                                   ("2001:7f0:3003:cafe:ba27:ebff:fe71:dd32", 2323)],
+                 imageSize=(144, 120),
+                 transposed = True
                  ):
         self.__sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.transposed = transposed
-        self.udpHostAndPort=udpHostAndPort
+        self.udpHostsAndPorts=udpHostsAndPorts
+        self.numberOfMatrixes = len(udpHostsAndPorts)
+        self.MatrixSize = (imageSize[0]/self.numberOfMatrixes, imageSize[1])
         self.flipdotImage = FlipdotImage.newBlackFlipdotImage(imageSize[0], imageSize[1])
     
     def resetAll(self):
@@ -23,9 +27,9 @@ class FlipdotMatrix():
         self.show(whiteImage)
         self.show(blackImage)
     
-    def __showSerializedArrayOfPixels(self, imageArray):
+    def __showSerializedArrayOfPixels(self, imageArray, udpHostAndPort):
         udpPacket = FlipdotMatrix.__arrayToPacket(imageArray) 
-        self.__sendUdpPackage(udpPacket)
+        self.__sendUdpPackage(udpPacket, udpHostAndPort)
     
     def show(self, image):
         """
@@ -33,25 +37,31 @@ class FlipdotMatrix():
         """
         self.__clearFlipdotImageWithoutUpdate()
         self.flipdotImage.blitImageAtPosition(image)
-        self.__updateFlipdotMatrix()
+        self.__updateFlipdotMatrixes()
 
     def showBlit (self, image, xPos=0, yPos=0):
         """
         send FlipdotImage to display, keeps old pixels around
         """ 
         self.flipdotImage.blitImageAtPosition(image, xPos, yPos)
-        self.__updateFlipdotMatrix()
+        self.__updateFlipdotMatrixes()
 
-    def __updateFlipdotMatrix(self):
-        serializedImageArray = self.flipdotImage.serializeImageArray(self.transposed)
-        self.__showSerializedArrayOfPixels(serializedImageArray)
+    def __updateFlipdotMatrixes(self):
+        for i in range(self.numberOfMatrixes):
+            MatrixSize = self.MatrixSize
+            xOffset = i*MatrixSize[0]
+            yOffset = 0
+            flipdotImage = FlipdotImage.NewPartOfAnotherFlipdotImage(self.flipdotImage, newSize=MatrixSize, offset=(xOffset, yOffset))
+            serializedImageArray = flipdotImage.serializeImageArray(self.transposed)
+            udpHostAndPort = self.udpHostsAndPorts[i]
+            self.__showSerializedArrayOfPixels(serializedImageArray, udpHostAndPort)
     
     def clear(self):
         """
         clears display. fills with black pixels
         """
         self.__clearFlipdotImageWithoutUpdate()
-        self.__updateFlipdotMatrix()
+        self.__updateFlipdotMatrixes()
     
     def __clearFlipdotImageWithoutUpdate(self):
         width = self.flipdotImage.width
@@ -64,14 +74,14 @@ class FlipdotMatrix():
         """
         self.__clearFlipdotImageWithoutUpdate()
         self.flipdotImage.blitTextAtPosition(text, linebreak, xPos, yPos)
-        self.__updateFlipdotMatrix()
+        self.__updateFlipdotMatrixes()
 
     def showBlitText(self, text, linebreak=False, xPos=0, yPos=0):
         """
         print text to display, keeps old pixels around
         """
         self.flipdotImage.blitTextAtPosition(text, linebreak, xPos, yPos)
-        self.__updateFlipdotMatrix()
+        self.__updateFlipdotMatrixes()
 
     @staticmethod
     def __arrayToPacket(imageArray):
@@ -84,9 +94,8 @@ class FlipdotMatrix():
             byte += 2**(7-i) if ArrayOfBinaryInts[i] else 0
         return byte
 
-    
-    def __sendUdpPackage(self, udpPacket):
-        self.__sock.sendto(udpPacket, self.udpHostAndPort)
+    def __sendUdpPackage(self, udpPacket, udpHostAndPort):
+        self.__sock.sendto(udpPacket, udpHostAndPort)
         
 
 
@@ -166,6 +175,10 @@ class FlipdotImage(object):
 
     def getLine(self, line):
         return self.rowArrayOfLineArraysOfPixels[line]
+    
+    def getSinglePixel(self, x, y):
+        return self.rowArrayOfLineArraysOfPixels[y][x]
+    
         
     @classmethod
     def newBlackFlipdotImage(cls, width, height):
@@ -176,6 +189,26 @@ class FlipdotImage(object):
     def newWhiteFlipdotImage(cls, width, height):
         pixel2DArray = cls.generateColoredRowArrayOfLineArraysOfPixels(width, height, FlipdotImage.WHITEPIXEL) 
         return cls(pixel2DArray)
+    
+    @classmethod
+    def NewPartOfAnotherFlipdotImage(cls, oldFlipdotImage, newSize, offset):
+        pixel2DArray = cls.cutPartOfAnotherFlipdotImage(oldFlipdotImage, newSize, offset)
+        return cls(pixel2DArray)
+    
+    @classmethod
+    def cutPartOfAnotherFlipdotImage(cls, oldFlipdotImage, newSize, offset):
+        width = newSize[0]
+        height = newSize[1]
+        xOffset = offset[0]
+        yOffset = offset[1]
+        rowArrayOfLineArrayOfPixels = []
+        for y in range(height):
+            lineArrayOfPixels = []
+            for x in range(width):
+                lineArrayOfPixels.append(oldFlipdotImage.getSinglePixel(xOffset+x, yOffset+y))
+            rowArrayOfLineArrayOfPixels.append(lineArrayOfPixels)
+        return rowArrayOfLineArrayOfPixels
+        
     
     @staticmethod
     def generateColoredRowArrayOfLineArraysOfPixels(width, height, color):        
@@ -193,8 +226,8 @@ class FlipdotImage(object):
 
 #main
 if (__name__=="__main__"):
-    matrix = FlipdotMatrix( udpHostAndPort=("2001:7f0:3003:cafe:ba27:ebff:fe86:8697",2323), imageSize=(48, 120), transposed = True)
+    matrix = FlipdotMatrix()
     matrix.resetAll()
-    matrix.showText("flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots! flip the dots!", True)    
+    matrix.showText("\n \n \n   Bitte gehen Sie weiter!\n \n \n Hier gibt es nichts zu sehen\n ", True)    
     
     
