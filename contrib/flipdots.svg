@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="2104.7244"
+   height="2979.9211"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="flipdots.svg">
+  <defs
+     id="defs4">
+    <filter
+       color-interpolation-filters="sRGB"
+       inkscape:collect="always"
+       x="-0.10392075"
+       width="1.2078415"
+       y="-0.096406884"
+       height="1.1928138"
+       id="filter3494">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="23.264288"
+         id="feGaussianBlur3496" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="614.56362"
+     inkscape:cy="2122.1561"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1680"
+     inkscape:window-height="963"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid2985"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+    <sodipodi:guide
+       position="0,0"
+       orientation="0,2104.7244"
+       id="guide3757" />
+    <sodipodi:guide
+       position="2104.7244,0"
+       orientation="-2979.9211,0"
+       id="guide3759" />
+    <sodipodi:guide
+       position="2104.7244,2979.9211"
+       orientation="0,-2104.7244"
+       id="guide3761" />
+    <sodipodi:guide
+       position="0,2979.9211"
+       orientation="2979.9211,0"
+       id="guide3763" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,1927.5591)">
+    <rect
+       style="fill:#1a1a1a;fill-opacity:1;stroke:#28220b;stroke-width:2.97954655;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2987"
+       width="2114.3062"
+       height="2982.8777"
+       x="-0.010226715"
+       y="-1919.0768"
+       ry="0" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3765"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3767"><rect
+           id="rect3769"
+           width="1834.2858"
+           height="1497.1428"
+           x="165.71428"
+           y="711.34973" /></flowRegion><flowPara
+         id="flowPara3771" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3773"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(-90,-2089.5591)"><flowRegion
+         id="flowRegion3775"><rect
+           id="rect3777"
+           width="1718.8572"
+           height="1476.2856"
+           x="257.14285"
+           y="825.63544" /></flowRegion><flowPara
+         id="flowPara3779"
+         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff">Die Flipdot-Anzeige wurde aus den Einzelteilen einer ausrangierten Park-and-Ride-Anzeige ge-baut, die früher über der A9 im Münchner Norden angebracht war.</flowPara><flowPara
+         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
+         id="flowPara3801">Ansteuerelektronik und Software wurden von uns weitgehend neu konzipiert und entwickelt. Neben Text können jetzt auch Bilder und Spiele mittels Python-Programmen auf die Panels geladen werden. </flowPara><flowPara
+         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
+         id="flowPara3797">Es gibt drei Anzeigeelemente die aus jeweils 18 Panels bestehen und auch einzeln ver-wendet werden können. Jedes Panel besteht aus 16x20 Pixeln die mittels Elektromagneten einzeln umgeklappt werden können. Dadurch bleibt das Bild auch bei Abschalten der Strom-versorgung erhalten.</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       x="259.18326"
+       y="-1410.7808"
+       id="text3822"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3824"
+         x="259.18326"
+         y="-1410.7808"
+         style="font-size:432px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:20px;fill:#ffffff;font-family:Arcade;-inkscape-font-specification:Arcade">Flipdots</tspan></text>
+    <g
+       id="g3831"
+       transform="translate(1.257813,-110)">
+      <flowRoot
+         transform="translate(-148,-2063.5591)"
+         style="font-size:72px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+         id="flowRoot3781"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3783"><rect
+             style="font-size:72px"
+             y="2574.2068"
+             x="497.14285"
+             height="131.71436"
+             width="1764.8572"
+             id="rect3785" /></flowRegion><flowPara
+           style="font-size:72px;font-weight:bold;fill:#ffffff;-inkscape-font-specification:Sans Bold"
+           id="flowPara3787">http://muc.ccc.de/flipdot</flowPara></flowRoot>      <image
+         y="432.36203"
+         x="1474"
+         id="image10"
+         xlink:href="file:///home/ck/flipdots/qrcode.png"
+         height="250"
+         width="250" />
+    </g>
+    <g
+       transform="matrix(0.42203113,0,0,0.42203113,900.85143,758.54228)"
+       style="fill:#000000;display:inline"
+       id="g3052">
+      <g
+         style="opacity:0.25;fill:#ffffff;display:inline"
+         id="g2219"
+         transform="translate(4.712e-6,-1e-6)">
+        <path
+           inkscape:connector-curvature="0"
+           id="path2221"
+           d="m 294.407,7.95792 c 6.213,1.027 19.117,20.42198 17.554,56.04198 -4.3,2.287 -9.289,0.945 -12.547,0.894 -10.184,-2.682 -0.678,-29.555 -14.953,-39.546 C 263.79,10.8809 119.447,14.4069 45.5808,21.1209 13.592,24.0289 17.478,87.0639 16.8569,120.43 c -0.5169,27.768 0.4448,58.119 11.4189,88.93 9.4468,26.524 44.2989,17.409 75.9712,18.571 56.978,0 160.981,1.883 173.53,-3.125 9.092,-3.629 12.796,-16.972 14.709,-25.575 3.351,-15.069 -0.168,-25.607 11.822,-25.324 6.313,0.149 7.555,5.857 6.592,16.772 -1.001,11.346 -4.393,26.441 -9.128,44.005 -3.421,12.688 -27.012,10.129 -42.628,10.129 C 180.218,242.704 100.45,245.236 24.0554,243.125 1.9155,242.514 1.46946,137.911 0.285625,118.923 -1.10525,96.6069 2.51438,7.01993 21.3615,6.01993 35.3674,5.27692 113.628,0.0309143 159.959,0.0189209 205.016,0.00692749 252.988,1.11093 294.407,7.95792"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2223"
+           d="m 223.69,24.0759 c 5.487,15.616 -8.019,40.096 12.24,48.537 73.438,12.662 159.117,-14.772 221.582,23.635 16.882,16.4601 29.544,35.4531 37.563,55.7121 l 0,-9.285 c -9.285,-25.746 -28.278,-47.6931 -46.427,-70.0621 5.065,-6.753 10.974,1.266 16.038,3.376 18.571,23.213 37.563,46.8491 44.739,74.7051 1.265,1.688 3.798,5.065 5.908,2.11 l 2.955,-2.954 c -6.331,-29.966 -25.324,-54.4461 -41.362,-80.1921 7.175,-4.643 14.35,3.377 20.259,8.019 12.24,20.259 25.746,40.5181 30.388,64.1531 3.376,2.532 7.597,-2.11 9.285,-5.065 -2.532,-18.571 -8.864,-35.031 -16.461,-50.6471 1.266,-2.11 1.266,-5.065 4.221,-5.065 18.149,9.707 17.727,30.8111 24.057,47.2711 5.909,-0.422 8.863,-18.993 16.46,-8.019 2.532,6.753 -10.129,17.305 2.955,18.149 -6.331,30.388 -39.674,54.024 -68.796,60.777 -15.194,3.376 -35.453,8.018 -46.849,-3.798 2.11,-5.487 9.707,-6.331 15.194,-7.175 33.765,-1.266 65.842,-13.506 86.101,-40.518 l -0.844,-0.844 c -32.077,21.525 -71.75,42.206 -111.424,26.168 -3.376,-0.844 -5.065,-5.487 -2.954,-8.019 0.844,-2.532 -1.688,-3.798 -2.955,-4.221 -67.108,2.954 -137.596,-6.324 -202.593,4.227 -7.13,1.158 -7.934,7.746 -9.284,13.082 -3.414,13.511 5.21,32.647 -2.824,39.846 0,0 -5.936,1.741 -10.256,-0.177 -1.011,-5.609 -4.227,-37.144 2.948,-54.026 9.077,-21.357 89.954,-14.153 113.334,-14.626 42.722,-0.863 92.638,-2.254 132.734,0.701 -11.396,-11.396 -29.122,-11.818 -46.427,-11.396 -54.868,-0.844 -140.604,-0.559 -175.376,-2.466 -51.431,-2.822 -69.842,48.893 -102.341,82.658 l -15.194,0 c 20.259,-28.277 42.097,-60.522 70.062,-85.256 4.509,-3.988 7.645,-4.615 15.194,-6.752 21.025,-5.953 224.959,0.844 224.959,0.844 9.285,2.11 19.415,3.376 28.278,7.174 -5.065,-13.084 -21.525,-16.46 -34.609,-18.147 -73.017,-2.11 -146.877,-0.422 -218.628,-5.065 -19.415,-5.909 -29.544,-29.9661 -44.739,-44.7391 l -32.499,-41.362 16.46,0.844 c 21.103,24.479 35.575,54.506 62.887,73.8601 6.02,4.266 134.602,3.027 202.584,2.954 10.96,-0.012 33.77,7.175 48.542,15.195 2.532,-3.376 -1.688,-6.331 -4.221,-8.863 -30.811,-29.5441 -94.362,-20.3431 -117.328,-20.2641 -40.285,0.14 -88.233,8.522 -121.559,-12.235 -8.141,-5.071 -6.752,-35.875 -2.953,-52.758 l 10.973,0"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2225"
+           d="m 575.267,153.649 c -7.175,30.389 -29.544,57.822 -57.823,73.017 -17.727,3.799 -40.518,15.616 -54.868,-2.11 9.708,-8.863 27.434,-2.954 38.83,-10.13 29.544,-8.441 53.858,-34.474 68.796,-60.777 1.91,-1.321 3.195,-2.823 5.065,0"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2227"
+           d="m 584.142,179.84 c -5.065,26.168 -17.727,53.602 -44.739,66.686 -11.818,5.487 -30.388,11.818 -41.362,2.11 l 0,-4.221 c 41.784,1.688 62.887,-42.206 79.77,-71.75 4.643,-0.422 5.065,3.798 6.331,7.175"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2229"
+           d="m 611.567,280.265 c 19.879,4.224 39.249,-15.615 43.47,10.131 -16.883,8.863 -39.674,6.331 -57.4,1.266 -3.799,7.597 1.688,16.038 0,25.324 -2.532,24.902 -11.818,48.537 -33.765,63.731 -6.357,3.3 -7.677,5.247 -11.431,5.909 1.138,-5.702 1.527,-10.353 2.5,-13.899 4.346,-2.92 23.503,-15.22 24.125,-31.684 9.707,-34.609 -0.844,-68.796 -24.058,-94.12 l 15.194,-13.928 c 8.863,17.726 18.896,42.495 41.364,47.269"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path2231"
+           d="m 542.769,257.054 c 24.479,47.271 1.688,102.561 -4.221,151.098 2.532,18.149 5.065,36.719 20.259,49.381 -1.688,4.221 0.844,14.772 -5.909,12.24 -21.525,-11.396 -28.7,-34.187 -28.278,-57.822 -0.844,-41.784 21.525,-75.127 16.038,-117.333 L 536.86,286.6 c -17.305,18.57 -36.719,41.784 -35.453,70.905 l -11.396,2.11 c -12.662,-40.518 31.655,-63.743 37.564,-100.04 0,0 9.707,-3.786 15.194,-2.521"
+           style="stroke:none" />
+        <path
+           inkscape:connector-curvature="0"
+           id="path1928"
+           d="m 488.47856,375 c -32.09293,0 -18.79279,17 -16.97056,17 47.38108,0 47.38108,0 47.38108,-7 0,-10 5,-10 -12.02574,-10 -8.37737,0 -8.16966,0 -18.38478,0 l 0,0 0,0 z"
+           style="stroke:none" />
+      </g>
+      <g
+         transform="matrix(0.998795,0.04906767,-0.04906767,0.998795,-980.8202,11.832989)"
+         id="g2993"
+         style="fill:#ffff00;stroke:#ffff00;display:inline">
+        <rect
+           ry="50"
+           rx="50"
+           id="rect3000"
+           width="504.22153"
+           height="403.01559"
+           x="1457.8287"
+           y="715.21448"
+           transform="matrix(0.893936,-0.448194,-0.225536,0.974235,0,0)"
+           style="stroke-width:0.9432283;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline;filter:url(#filter3494)" />
+      </g>
+      <g
+         id="g1896"
+         transform="translate(12.48528,8.72792)">
+        <text
+           sodipodi:linespacing="125%"
+           id="text1949"
+           y="247"
+           x="295.19415"
+           style="font-size:224px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill-opacity:1;stroke:none;font-family:Utopia"
+           xml:space="preserve"><tspan
+             y="247"
+             x="295.19415"
+             id="tspan1951"
+             sodipodi:role="line">c</tspan></text>
+        <text
+           sodipodi:linespacing="125%"
+           id="text1888"
+           y="247"
+           x="170"
+           style="font-size:224px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill-opacity:1;stroke:none;font-family:Utopia"
+           xml:space="preserve"><tspan
+             y="247"
+             x="170"
+             id="tspan1890"
+             sodipodi:role="line">µ</tspan></text>
+        <text
+           sodipodi:linespacing="125%"
+           id="text1892"
+           y="247"
+           x="394"
+           style="font-size:224px;font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill-opacity:1;stroke:none;font-family:Utopia"
+           xml:space="preserve"><tspan
+             y="247"
+             x="394"
+             id="tspan1894"
+             sodipodi:role="line">³</tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
