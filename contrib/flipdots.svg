@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="flipdots.svg">
+   sodipodi:docname="flipdots.pdf">
   <defs
      id="defs4">
     <filter
@@ -40,8 +40,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="614.56362"
-     inkscape:cy="2122.1561"
+     inkscape:cx="620.27791"
+     inkscape:cy="1673.7162"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -123,7 +123,7 @@
          id="flowPara3779"
          style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff">Die Flipdot-Anzeige wurde aus den Einzelteilen einer ausrangierten Park-and-Ride-Anzeige ge-baut, die früher über der A9 im Münchner Norden angebracht war.</flowPara><flowPara
          style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
-         id="flowPara3801">Ansteuerelektronik und Software wurden von uns weitgehend neu konzipiert und entwickelt. Neben Text können jetzt auch Bilder und Spiele mittels Python-Programmen auf die Panels geladen werden. </flowPara><flowPara
+         id="flowPara3801">Ansteuerelektronik und Software wurden vom CCC München weitgehend neu konzipiert und entwickelt. Neben Text können jetzt auch Bilder und Spiele mittels Python-Programmen auf die Panels geladen werden. </flowPara><flowPara
          style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
          id="flowPara3797">Es gibt drei Anzeigeelemente die aus jeweils 18 Panels bestehen und auch einzeln ver-wendet werden können. Jedes Panel besteht aus 16x20 Pixeln die mittels Elektromagneten einzeln umgeklappt werden können. Dadurch bleibt das Bild auch bei Abschalten der Strom-versorgung erhalten.</flowPara></flowRoot>    <text
        xml:space="preserve"
