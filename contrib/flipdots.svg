@@ -15,7 +15,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="flipdots.pdf">
+   sodipodi:docname="flipdots.svg">
   <defs
      id="defs4">
     <filter
@@ -39,16 +39,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="620.27791"
-     inkscape:cy="1673.7162"
+     inkscape:zoom="0.24748737"
+     inkscape:cx="1254.8066"
+     inkscape:cy="1573.5244"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="963"
+     inkscape:window-width="1600"
+     inkscape:window-height="847"
      inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-y="31"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -82,7 +82,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -92,7 +92,7 @@
      id="layer1"
      transform="translate(0,1927.5591)">
     <rect
-       style="fill:#1a1a1a;fill-opacity:1;stroke:#28220b;stroke-width:2.97954655;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#000000;fill-opacity:1;stroke:#28220b;stroke-width:2.97954654999999979;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect2987"
        width="2114.3062"
        height="2982.8777"
@@ -154,12 +154,12 @@
              id="rect3785" /></flowRegion><flowPara
            style="font-size:72px;font-weight:bold;fill:#ffffff;-inkscape-font-specification:Sans Bold"
            id="flowPara3787">http://muc.ccc.de/flipdot</flowPara></flowRoot>      <image
-         y="432.36203"
-         x="1474"
-         id="image10"
-         xlink:href="file:///home/ck/flipdots/qrcode.png"
+         width="250"
          height="250"
-         width="250" />
+         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAAA3NCSVQICAjb4U/gAAAFMUlEQVR4 nO3dQXIiORRAwWZi7n9lz2KWTTmQSxLCL3PtLjC80OJbLT2+vr7+QMM/734DsI/cCZE7IXInRO6E yJ0QuRMid0LkTojcCZE7IXInRO6EyJ0QuRPy7+g/eDweK97HFFd795++5ykb/e8/+erzfPqQoR+e 4uSv+8/4L251J0TuhMidELkTIndC5E7I8CDyqf2ndwwNyO5PBqfMFg9x/xc8/Ov+htWdELkTIndC 5E6I3AmROyFyJ2TO3P3K/XHp/hHvuldcN/4f+uGTdwuv/rqt7oTInRC5EyJ3QuROiNwJWTuI/ESb txYPPXn/SQS/jNWdELkTIndC5E6I3AmROyFyJyQxd193AvDrLzf6ikND+nV/K/hlrO6EyJ0QuRMi d0LkTojcCVk7iDx55jXlDrDXn3D1kCkf0eYjjqe8jbewuhMid0LkTojcCZE7IXInRO6EzJm7H37X 3FNTpuObtxYf8jY+8ev+n9WdELkTIndC5E6I3AmROyGP8zdtfpz9JxEMKX/jVndC5E6I3AmROyFy J0TuhMidkDlz98N3hN4/S2PoyUM+8TK9/QcOz/qUrO6EyJ0QuRMid0LkTojcCRk+iWDzEGr/nG7d 1PL1l7t6xXU/vM5R16RZ3QmROyFyJ0TuhMidELkTIndChjcAH3IgxOax9LoZ9v7p+ObPeYi5O0wj d0LkTojcCZE7IXInZHgD8P39sVMOwh16yLofHnrCIXunN99bdmUopFlvz+pOiNwJkTshcidE7oTI nRC5EzLn4I2hSfOUra0nHzUxxboh/bqB97qrBZ0ADMPkTojcCZE7IXInRO6EDA8i71u313TK8O6Q /bFPTZm03v/hdTucV4+Mre6EyJ0QuRMid0LkTojcCZE7IW84eOPK5nN61414h3arrjtqYv8fFjZf h/gDVndC5E6I3AmROyFyJ0TuhMy5iuxz76Z60SEXg01xyEHEb/lmre6EyJ0QuRMid0LkTojcCZE7 IcNz97Gn/5ZzevcfNXH/NN39B5xsvpXxB6zuhMidELkTIndC5E6I3AmZswF4v/tDvSm/yLr9sYte bsrbmGLKl+IqMrgkd0LkTojcCZE7IXInRO6ErD144/UnzHrI69YdkLvuqIn9Q/qTP+cfsLoTIndC 5E6I3AmROyFyJ2T4KrIhQ2OsocnUuqnlIXeArZvT3X/yIWPZH7C6EyJ3QuROiNwJkTshcidE7oSs nbsP2Xx+7CHbdK+sOy74qft/Ibmy9MBnB2/AJbkTIndC5E6I3AmROyFrryI7xOYb0dZtAF5n/7EF TgCGteROiNwJkTshcidE7oTInZDhDcCH3Lz31JTh8brNtOtuC1x3teDmUzqcAAzTyJ0QuRMid0Lk TojcCZlzEsH+XcT3p2zr/lf//g3A66bDJ49lf8DqTojcCZE7IXInRO6EyJ0QuRNy0M17T33iRP/K uon+kKe/4P593euuFvyG1Z0QuRMid0LkTojcCZE7IQddRbbZ/jNv91+rdv/JQy+37kCEWazuhMid ELkTIndC5E6I3AmROyHdufuVoY2p66bj68bVh1wt+PoTRh/yDas7IXInRO6EyJ0QuRMid0LWDiL3 nyPwunUzrykzxM1vY8pBxENPeEsbVndC5E6I3AmROyFyJ0TuhMidkDlz96MOV/jb0IEQJ/8uh0z0 p7ycE4BhLbkTIndC5E6I3AmROyFyJ+Rx8pZ0mMvqTojcCZE7IXInRO6EyJ0QuRMid0LkTojcCZE7 IXInRO6EyJ0QuRPyH7fqLQArbnRPAAAAAElFTkSuQmCC "
+         id="image3088"
+         x="1462.7422"
+         y="432.36203" />
     </g>
     <g
        transform="matrix(0.42203113,0,0,0.42203113,900.85143,758.54228)"
