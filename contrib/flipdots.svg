@@ -11,7 +11,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="2104.7244"
-   height="2979.9211"
+   height="1488.189"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
@@ -39,16 +39,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.24748737"
-     inkscape:cx="1254.8066"
-     inkscape:cy="1573.5244"
+     inkscape:zoom="0.35"
+     inkscape:cx="315.83048"
+     inkscape:cy="657.02986"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1600"
-     inkscape:window-height="847"
+     inkscape:window-width="1680"
+     inkscape:window-height="963"
      inkscape:window-x="0"
-     inkscape:window-y="31"
+     inkscape:window-y="27"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -90,19 +90,19 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,1927.5591)">
+     transform="translate(0,435.82691)">
     <rect
-       style="fill:#000000;fill-opacity:1;stroke:#28220b;stroke-width:2.97954654999999979;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#1a1a1a;fill-opacity:1;stroke:#28220b;stroke-width:2.10791469;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect2987"
-       width="2114.3062"
-       height="2982.8777"
-       x="-0.010226715"
-       y="-1919.0768"
+       width="2115.1777"
+       height="1492.3208"
+       x="-0.44604263"
+       y="-439.51248"
        ry="0" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot3765"
-       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"><flowRegion
          id="flowRegion3767"><rect
            id="rect3769"
            width="1834.2858"
@@ -113,35 +113,31 @@
        xml:space="preserve"
        id="flowRoot3773"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       transform="translate(-90,-2089.5591)"><flowRegion
+       transform="translate(102.84375,-1117.055)"><flowRegion
          id="flowRegion3775"><rect
            id="rect3777"
            width="1718.8572"
            height="1476.2856"
            x="257.14285"
            y="825.63544" /></flowRegion><flowPara
-         id="flowPara3779"
-         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff">Die Flipdot-Anzeige wurde aus den Einzelteilen einer ausrangierten Park-and-Ride-Anzeige ge-baut, die früher über der A9 im Münchner Norden angebracht war.</flowPara><flowPara
-         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
-         id="flowPara3801">Ansteuerelektronik und Software wurden vom CCC München weitgehend neu konzipiert und entwickelt. Neben Text können jetzt auch Bilder und Spiele mittels Python-Programmen auf die Panels geladen werden. </flowPara><flowPara
-         style="font-size:72px;text-align:justify;text-anchor:start;fill:#ffffff"
-         id="flowPara3797">Es gibt drei Anzeigeelemente die aus jeweils 18 Panels bestehen und auch einzeln ver-wendet werden können. Jedes Panel besteht aus 16x20 Pixeln die mittels Elektromagneten einzeln umgeklappt werden können. Dadurch bleibt das Bild auch bei Abschalten der Strom-versorgung erhalten.</flowPara></flowRoot>    <text
+         style="font-size:64px;text-align:justify;text-anchor:start;fill:#ffffff"
+         id="flowPara3797" /></flowRoot>    <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="259.18326"
-       y="-1410.7808"
+       x="80"
+       y="114.36205"
        id="text3822"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3824"
-         x="259.18326"
-         y="-1410.7808"
-         style="font-size:432px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:20px;fill:#ffffff;font-family:Arcade;-inkscape-font-specification:Arcade">Flipdots</tspan></text>
+         x="80"
+         y="114.36205"
+         style="font-size:216px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:20px;fill:#ffffff;font-family:Arcade;-inkscape-font-specification:Arcade">Flipdots</tspan></text>
     <g
-       id="g3831"
-       transform="translate(1.257813,-110)">
+       id="g3056"
+       transform="translate(0,234)">
       <flowRoot
-         transform="translate(-148,-2063.5591)"
+         transform="translate(-380.96663,-2315.6486)"
          style="font-size:72px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
          id="flowRoot3781"
          xml:space="preserve"><flowRegion
@@ -152,17 +148,17 @@
              height="131.71436"
              width="1764.8572"
              id="rect3785" /></flowRegion><flowPara
-           style="font-size:72px;font-weight:bold;fill:#ffffff;-inkscape-font-specification:Sans Bold"
+           style="font-size:56px;font-weight:bold;fill:#ffffff;-inkscape-font-specification:Sans Bold"
            id="flowPara3787">http://muc.ccc.de/flipdot</flowPara></flowRoot>      <image
-         width="250"
-         height="250"
-         xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAAD6CAIAAAAHjs1qAAAAA3NCSVQICAjb4U/gAAAFMUlEQVR4 nO3dQXIiORRAwWZi7n9lz2KWTTmQSxLCL3PtLjC80OJbLT2+vr7+QMM/734DsI/cCZE7IXInRO6E yJ0QuRMid0LkTojcCZE7IXInRO6EyJ0QuRPy7+g/eDweK97HFFd795++5ykb/e8/+erzfPqQoR+e 4uSv+8/4L251J0TuhMidELkTIndC5E7I8CDyqf2ndwwNyO5PBqfMFg9x/xc8/Ov+htWdELkTIndC 5E6I3AmROyFyJ2TO3P3K/XHp/hHvuldcN/4f+uGTdwuv/rqt7oTInRC5EyJ3QuROiNwJWTuI/ESb txYPPXn/SQS/jNWdELkTIndC5E6I3AmROyFyJyQxd193AvDrLzf6ikND+nV/K/hlrO6EyJ0QuRMi d0LkTojcCVk7iDx55jXlDrDXn3D1kCkf0eYjjqe8jbewuhMid0LkTojcCZE7IXInRO6EzJm7H37X 3FNTpuObtxYf8jY+8ev+n9WdELkTIndC5E6I3AmROyGP8zdtfpz9JxEMKX/jVndC5E6I3AmROyFy J0TuhMidkDlz98N3hN4/S2PoyUM+8TK9/QcOz/qUrO6EyJ0QuRMid0LkTojcCRk+iWDzEGr/nG7d 1PL1l7t6xXU/vM5R16RZ3QmROyFyJ0TuhMidELkTIndChjcAH3IgxOax9LoZ9v7p+ObPeYi5O0wj d0LkTojcCZE7IXInZHgD8P39sVMOwh16yLofHnrCIXunN99bdmUopFlvz+pOiNwJkTshcidE7oTI nRC5EzLn4I2hSfOUra0nHzUxxboh/bqB97qrBZ0ADMPkTojcCZE7IXInRO6EDA8i71u313TK8O6Q /bFPTZm03v/hdTucV4+Mre6EyJ0QuRMid0LkTojcCZE7IW84eOPK5nN61414h3arrjtqYv8fFjZf h/gDVndC5E6I3AmROyFyJ0TuhMy5iuxz76Z60SEXg01xyEHEb/lmre6EyJ0QuRMid0LkTojcCZE7 IcNz97Gn/5ZzevcfNXH/NN39B5xsvpXxB6zuhMidELkTIndC5E6I3AmZswF4v/tDvSm/yLr9sYte bsrbmGLKl+IqMrgkd0LkTojcCZE7IXInRO6ErD144/UnzHrI69YdkLvuqIn9Q/qTP+cfsLoTIndC 5E6I3AmROyFyJ2T4KrIhQ2OsocnUuqnlIXeArZvT3X/yIWPZH7C6EyJ3QuROiNwJkTshcidE7oSs nbsP2Xx+7CHbdK+sOy74qft/Ibmy9MBnB2/AJbkTIndC5E6I3AmROyFrryI7xOYb0dZtAF5n/7EF TgCGteROiNwJkTshcidE7oTInZDhDcCH3Lz31JTh8brNtOtuC1x3teDmUzqcAAzTyJ0QuRMid0Lk TojcCZlzEsH+XcT3p2zr/lf//g3A66bDJ49lf8DqTojcCZE7IXInRO6EyJ0QuRNy0M17T33iRP/K uon+kKe/4P593euuFvyG1Z0QuRMid0LkTojcCZE7IQddRbbZ/jNv91+rdv/JQy+37kCEWazuhMid ELkTIndC5E6I3AmROyHdufuVoY2p66bj68bVh1wt+PoTRh/yDas7IXInRO6EyJ0QuRMid0LWDiL3 nyPwunUzrykzxM1vY8pBxENPeEsbVndC5E6I3AmROyFyJ0TuhMidkDlz96MOV/jb0IEQJ/8uh0z0 p7ycE4BhLbkTIndC5E6I3AmROyFyJ+Rx8pZ0mMvqTojcCZE7IXInRO6EyJ0QuRMid0LkTojcCZE7 IXInRO6EyJ0QuRPyH7fqLQArbnRPAAAAAElFTkSuQmCC "
-         id="image3088"
-         x="1462.7422"
-         y="432.36203" />
+         y="362.36206"
+         x="415.83807"
+         id="image10"
+         xlink:href="file:///home/ck/flipdots/qrcode.png"
+         height="180"
+         width="180" />
     </g>
     <g
-       transform="matrix(0.42203113,0,0,0.42203113,900.85143,758.54228)"
+       transform="matrix(0.27130573,0,0,0.27130573,415.83296,-370.3115)"
        style="fill:#000000;display:inline"
        id="g3052">
       <g
@@ -258,5 +254,31 @@
              sodipodi:role="line">³</tspan></text>
       </g>
     </g>
-  </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3026"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion3028"><rect
+           id="rect3030"
+           width="8.5714283"
+           height="54.285713"
+           x="1751.4286"
+           y="1293.9032" /></flowRegion><flowPara
+         id="flowPara3032"></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3044"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(-176.84375,-431.92465)"><flowRegion
+         id="flowRegion3046"><rect
+           id="rect3048"
+           width="1064.7109"
+           height="1455.812"
+           x="1162.8572"
+           y="62.474678" /></flowRegion><flowPara
+         id="flowPara3050"
+         style="font-size:56px;text-align:justify;text-anchor:start;fill:#ffffff">Die Flipdot-Anzeige wurde aus den Einzelteilen einer ausrangierten Park-and-Ride-Anzeige ge-baut, die früher über der A9 im Münchner Norden angebracht war.</flowPara><flowPara
+         id="flowPara3052"
+         style="font-size:56px;text-align:justify;text-anchor:start;fill:#ffffff">Ansteuerelektronik und Software wurden von uns weitgehend neu konzipiert und entwickelt. Neben Text können jetzt auch Bilder und Spiele mittels Python-Programmen auf die Panels geladen werden. </flowPara><flowPara
+         id="flowPara3054"
+         style="font-size:56px;text-align:justify;text-anchor:start;fill:#ffffff">Es gibt drei Anzeigeelemente die aus jeweils 18 Panels bestehen und auch einzeln ver-wendet werden können. Jedes Panel besteht aus 16x20 Pixeln die mittels Elektromagneten einzeln umgeklappt werden können. Dadurch bleibt das Bild auch bei Abschalten der Strom-versorgung erhalten.</flowPara></flowRoot>  </g>
 </svg>
