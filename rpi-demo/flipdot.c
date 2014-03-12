@@ -83,7 +83,7 @@ static uint8_t reverse(uint8_t b)
     b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
     return b;
 }
-int active_pinning = 3;
+int active_pinning = 0;
 
 void
 flipdot_init(void)

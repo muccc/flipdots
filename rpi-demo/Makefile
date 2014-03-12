@@ -3,13 +3,13 @@ LIBS = -lmax7301 -lsimplespi
 
 all: demo udp-receiver
 
-flipdot.o: flipdot.c flipdot.h
+flipdot.o: flipdot.c flipdot.h config.h
 	$(CC) $(CFLAGS) -c flipdot.c -o flipdot.o
 
 demo: flipdot.o demo.c
 	$(CC) $(CFLAGS) demo.c flipdot.o $(LIBS) -o demo
 
-udp-receiver: flipdot_net.o flipdot.o udp-receiver.c
+udp-receiver: flipdot_net.o flipdot.o udp-receiver.c config.h
 	$(CC) $(CFLAGS) udp-receiver.c flipdot.o flipdot_net.o $(LIBS) -o udp-receiver
 
 flipdot_net.o: flipdot_net.c flipdot_net.h

@@ -22,6 +22,8 @@
 #ifndef FLIPDOT_H
 #define FLIPDOT_H
 
+#include "config.h"
+
 #include <stdint.h>
 
 enum sreg {
@@ -43,17 +45,15 @@ typedef struct {
 #define FLIP_DELAY_WHITE 1500			/* us */
 #define STROBE_DELAY 1			/* us */
 
-#define MODULE_COUNT 6
-
 #define MODULE_ROWS 16
 #define MODULE_COLS 20
 
-#define MODULE_PIXLE_COUNT (MODULE_ROWS*MODULE_COLS)
+#define MODULE_PIXEL_COUNT (MODULE_ROWS*MODULE_COLS)
 #define MODULE_BYTE_COUNT (MODULE_PIXEL_COUNT/8)
 
 #define ROW_GAP 4
 
-#define DISP_COLS   MODULE_COUNT*MODULE_COLS
+#define DISP_COLS   (CONFIG_BUS_LENGTH*MODULE_COLS)
 #define DISP_ROWS   MODULE_ROWS
 
 #define DISP_PIXEL_COUNT (DISP_ROWS*DISP_COLS)
