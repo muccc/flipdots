@@ -26,6 +26,12 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#include "time-helper.h"
+
+#define START_TIMER struct timeval t0, t1; gettimeofday(&t0, NULL);
+#define STOP_TIMER(acc) gettimeofday(&t1, NULL); acc += time_diff(t0, t1);
 
 extern int usleep (__useconds_t __useconds);
 #define _delay_us(x) usleep(x)
@@ -84,6 +90,10 @@ static uint8_t reverse(uint8_t b)
     return b;
 }
 int active_pinning = 3;
+
+long col_time = 0;
+long row_time = 0;
+long strobe_time = 0;
 
 void
 flipdot_init(void)
@@ -207,17 +217,20 @@ sreg_fill(enum sreg reg, uint8_t *data, int count)
 static void
 sreg_fill_col(uint8_t *data, int count)
 {
+    START_TIMER
 	int i = 0;
 	while (i < count) {
 		sreg_push_bit(COL, ISBITSET(data, (count-i-1)));
 		++i;
 	}
+    STOP_TIMER(col_time)
 }
 
 /* TODO: generalize for more panels */
 static void
 sreg_fill_row(uint8_t *data, int count)
 {
+    START_TIMER
     /* This is necessary because the row
 	* register has 4 unmapped bits */
     int i;
@@ -239,6 +252,7 @@ sreg_fill_row(uint8_t *data, int count)
         sreg_push_bit(ROW, ISBITSET(data, (count-i-1)));
         c++;
     }	
+    STOP_TIMER(row_time)
 }
 
 static void
@@ -254,6 +268,7 @@ strobe(void)
 static void
 flip_white(void)
 {
+    START_TIMER
     max7301_flush_history();
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 1);
@@ -264,11 +279,13 @@ flip_white(void)
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
     max7301_flush_history();
+    STOP_TIMER(strobe_time)
 }
 
 static void
 flip_black(void)
 {
+    START_TIMER
     max7301_flush_history();
     max7301_set_pin(pinning[active_pinning].oe_black, 1);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
@@ -279,4 +296,5 @@ flip_black(void)
     max7301_set_pin(pinning[active_pinning].oe_black, 0);
     max7301_set_pin(pinning[active_pinning].oe_white, 0);
     max7301_flush_history();
+    STOP_TIMER(strobe_time)
 }

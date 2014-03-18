@@ -63,4 +63,9 @@ typedef struct {
 void flipdot_init(void);
 void flipdot_data(uint8_t *frames, uint16_t size);
 
+extern long col_time;
+extern long row_time;
+extern long strobe_time;
+
+
 #endif /* FLIPDOT_H */
