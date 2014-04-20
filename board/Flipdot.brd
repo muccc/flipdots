@@ -67,6 +67,7 @@
 <layer number="96" name="Values" color="7" fill="1" visible="no" active="no"/>
 <layer number="97" name="Info" color="7" fill="1" visible="no" active="no"/>
 <layer number="98" name="Guide" color="6" fill="1" visible="no" active="no"/>
+<layer number="100" name="laser" color="7" fill="1" visible="no" active="yes"/>
 </layers>
 <board>
 <plain>
@@ -88,6 +89,14 @@
 <hole x="4" y="4" drill="4.2"/>
 <hole x="150" y="4" drill="4.2"/>
 <hole x="150" y="81" drill="4.2"/>
+<wire x1="0" y1="21" x2="24" y2="21" width="0.1" layer="100"/>
+<wire x1="24" y1="21" x2="24" y2="54" width="0.1" layer="100"/>
+<wire x1="24" y1="54" x2="91" y2="54" width="0.1" layer="100"/>
+<wire x1="91" y1="54" x2="91" y2="124" width="0.1" layer="100"/>
+<wire x1="91" y1="124" x2="0" y2="124" width="0.1" layer="100"/>
+<wire x1="0" y1="124" x2="0" y2="21" width="0.1" layer="100"/>
+<circle x="3.8" y="27.05" radius="1.25" width="0.01" layer="100"/>
+<circle x="3.8" y="74.55" radius="1.25" width="0.01" layer="100"/>
 </plain>
 <libraries>
 <library name="RaspberryPi">
