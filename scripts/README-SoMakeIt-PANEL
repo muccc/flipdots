@@ -1,0 +1,21 @@
+
+
+Steps to run the software on the rpi:
+1)  Attach the rpi to your ethernet port and power it up.
+    You should get a link.
+2)  Log into the rpi: ssh pi@fe80::ba27:ebff:fedf:d2dd%eth0
+    There is no need to setup a network, the IP address is link-local
+    only. The password is raspberry
+3)  Go to ~/flipdots/rpi-demo
+4)  Run ./udp-receiver
+
+
+Steps to send an image to the panel:
+
+1)  Create an image with an 60:32 ratio (60x32 works best).
+
+2)  Execute the display-somakeit script in this directory with the
+    image as argument.
+    It transforms any image to the right size and sends it
+    to the link local IP of the rpi.
+

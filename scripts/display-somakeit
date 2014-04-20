@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Convert it to the size of the panel
+convert $1 -resize 60x32 -gravity center -background black -extent 60x32 $1.pbm
+
+# Add the extra pixels at for the phantom panels.
+convert $1.pbm -gravity West -background white -extent 80x32 $1.pbm
+
+#pnmsmooth $1.pbm > $1.smooth.pgm
+#convert  $1.smooth.pgm  $1.smooth.pbm
+#pnminvert $1.smooth.pbm > $1.inv.pbm
+
+pnminvert $1.pbm > $1.inv.pbm
+tail -n +3 $1.inv.pbm > $1.bin
+
+cat $1.bin | socat - UDP:"fe80\:\:ba27\:ebff\:fedf\:d2dd%eth0":2323
+
