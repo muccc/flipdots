@@ -18,8 +18,8 @@ def run_once(old_html = ""):
     html = getHtml()[0:2000]
     if (html != old_html):
         matrix = FlipdotMatrix()
-        matrix.showText(html)
-#        print html
+        matrix.showText("  https://muc.pads.ccc.de/flipdot\n"+html)
+#        print "  https://muc.pads.ccc.de/flipdot\n"+html
     return html
 
 #main
