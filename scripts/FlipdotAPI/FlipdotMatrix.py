@@ -1,5 +1,4 @@
 import socket
-import sys
 from font import font8px
 
 class FlipdotMatrix():
@@ -231,7 +230,7 @@ class FlipdotImage(object):
 if (__name__=="__main__"):
     matrix = FlipdotMatrix()
     matrix.resetAll()
-#    matrix.showText("\n \n \n   Bitte gehen Sie weiter!\n \n \n Hier gibt es nichts zu sehen\n ", True)    
-    matrix.showText(sys.argv[1])
+    matrix.showText("\n \n \n   Bitte gehen Sie weiter!\n \n \n Hier gibt es nichts zu sehen\n ", True)    
+#    matrix.showText(sys.argv[1])
     
     
