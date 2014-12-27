@@ -9,15 +9,17 @@ def getHtml():
     return string.join(html)
 
 def run():
+    old_html = ""
     while True:
         time.sleep(2.0)
-        run_once()
+        old_html = run_once(old_html)
 
 def run_once(old_html = ""):
     html = getHtml()
     if (html != old_html):
         matrix = FlipdotMatrix()
         matrix.showText(html)
+    return html
 
 #main
 if (__name__=="__main__"):
