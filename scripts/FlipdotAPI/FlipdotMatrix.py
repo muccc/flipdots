@@ -1,11 +1,14 @@
 import socket
+import sys
 from font import font8px
 
 class FlipdotMatrix():
-    def __init__(self, 
-                 udpHostsAndPorts = [("2001:7f0:3003:cafe:ba27:ebff:fe86:8697",2323),
-                                   ("2001:7f0:3003:cafe:ba27:ebff:fe23:60d7", 2323),
-                                   ("2001:7f0:3003:cafe:ba27:ebff:fe71:dd32", 2323)],
+    def __init__(self,
+
+                 
+                 udpHostsAndPorts = [("2001:67c:20a1:1095:ba27:ebff:fe86:8697",2323),
+                                     ("2001:67c:20a1:1095:ba27:ebff:fe23:60d7", 2323),
+                                     ("2001:67c:20a1:1095:ba27:ebff:fe71:dd32", 2323)],
                  imageSize=(144, 120),
                  transposed = True
                  ):
@@ -228,6 +231,7 @@ class FlipdotImage(object):
 if (__name__=="__main__"):
     matrix = FlipdotMatrix()
     matrix.resetAll()
-    matrix.showText("\n \n \n   Bitte gehen Sie weiter!\n \n \n Hier gibt es nichts zu sehen\n ", True)    
+#    matrix.showText("\n \n \n   Bitte gehen Sie weiter!\n \n \n Hier gibt es nichts zu sehen\n ", True)    
+    matrix.showText(sys.argv[1])
     
     
