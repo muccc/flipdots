@@ -8,13 +8,19 @@ def getHtml():
     html = os.popen("wget --no-check-certificate -qO- https://muc.pads.ccc.de/ep/pad/export/flipdot/latest?format=txt").readlines()
     return string.join(html)
 
-#main
-if (__name__=="__main__"):
+def run():
     while True:
-        html = getHtml()
+        time.sleep(2.0)
+        run_once()
+
+def run_once(old_html = ""):
+    html = getHtml()
+    if (html != old_html):
         matrix = FlipdotMatrix()
         matrix.showText(html)
-        time.sleep(5.0)
-        
+
+#main
+if (__name__=="__main__"):
+    run()
 
 
