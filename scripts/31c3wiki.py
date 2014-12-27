@@ -15,14 +15,14 @@ def run():
         old_html = run_once(old_html)
 
 def run_once(old_html = ""):
-    html = getHtml()
+    html = getHtml()[0:2000]
     if (html != old_html):
         matrix = FlipdotMatrix()
         matrix.showText(html)
+#        print html
     return html
 
 #main
 if (__name__=="__main__"):
     run()
-
 
