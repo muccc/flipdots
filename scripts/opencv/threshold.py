@@ -19,7 +19,6 @@ IMG_THRESHOLD=64
 
 
 def send(image,dest):
-    print image
     msg = '';
     pieces = '';
     for line in image:

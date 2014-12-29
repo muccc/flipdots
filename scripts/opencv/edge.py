@@ -16,7 +16,6 @@ FD_RIGHT="2001:67c:20a1:1095:552a:1594:871f:d9c2"
 UDPPORT=2323
 
 def send(image,dest):
-    print image
     msg = '';
     pieces = '';
     for line in image:
