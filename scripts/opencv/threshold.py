@@ -12,8 +12,11 @@ FD_LEFT="2001:67c:20a1:1095:c49d:e22d:6891:dcd"
 FD_MIDDLE="2001:67c:20a1:1095:34b1:6957:8ddb:3a79"
 FD_RIGHT="2001:67c:20a1:1095:552a:1594:871f:d9c2"
 
-
 UDPPORT=2323
+
+IMG_THRESHOLD=64
+
+
 
 def send(image,dest):
     print image
@@ -62,7 +65,7 @@ while(True):
     # Our operations on the frame come here
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
 
-    ret,thresh = cv2.threshold(gray,64,1,cv2.THRESH_BINARY) 
+    ret,thresh = cv2.threshold(gray,IMG_THRESHOLD,1,cv2.THRESH_BINARY) 
 
     # Display the resulting frame
     cv2.imshow('frame',gray)
