@@ -56,6 +56,8 @@ while(True):
     
     dim=(144,120)
     resized=cv2.resize(frame,dim)
+    
+    resized = cv2.flip(resized,0)
 
     # Our operations on the frame come here
     gray = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
@@ -65,7 +67,7 @@ while(True):
 
     # Display the resulting frame
     cv2.imshow('frame',gray)
-    cv2.imshow('canny',thresh)
+    cv2.imshow('canny',thresh*255)
     left,middle,right = partition(thresh)
     send(left,FD_LEFT)
     send(middle,FD_MIDDLE)
@@ -76,7 +78,7 @@ while(True):
    
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
-    time.sleep(0.5)
+    time.sleep(0.7)
 
 # When everything done, release the capture
 cap.release()
