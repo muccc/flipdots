@@ -15,14 +15,15 @@ def run():
         old_html = run_once(old_html)
 
 def run_once(old_html = ""):
-    html = getHtml()[0:2000]
+    html = getHtml()[0:1000]
     if (html != old_html):
         matrix = FlipdotMatrix()
-        matrix.showText("  https://muc.pads.ccc.de/flipdot\n"+html)
-#        print "  https://muc.pads.ccc.de/flipdot\n"+html
+#        html =  "wiki.muc.ccc.de/flipdot:32c3\n"+html
+        matrix.showText("wiki.muc.ccc.de/flipdot:33c3\n"+html)
     return html
 
 #main
 if (__name__=="__main__"):
+    sys.setrecursionlimit(2028)
     run()
 
