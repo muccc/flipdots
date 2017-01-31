@@ -2,7 +2,7 @@
 #define CONFIG_H_
 
 // The number of active buses (A, B, C, D)
-#define CONFIG_BUS_COUNT        1
+#define CONFIG_BUS_COUNT        3
 
 // The number of panels on each bus.
 #define CONFIG_BUS_LENGTH       1

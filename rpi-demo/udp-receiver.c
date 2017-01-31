@@ -9,6 +9,7 @@ int main(void)
 {
     bool init = false;
     flipdot_net_init();
+    flipdot_init();
     
     uint8_t data[CONFIG_BUS_COUNT][MODULE_BYTE_COUNT * CONFIG_BUS_LENGTH];
     while (1) {

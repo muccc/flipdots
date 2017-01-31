@@ -1,5 +1,5 @@
 CFLAGS = -O3 -Wall -Werror -std=c99
-LIBS = -lmax7301 -lsimplespi
+LIBS = -lbcm2835
 
 all: demo udp-receiver
 
