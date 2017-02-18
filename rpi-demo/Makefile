@@ -1,4 +1,4 @@
-CFLAGS = -O3 -Wall -Werror -std=c99
+CFLAGS = -O3 -Wall -Werror -std=c99 -g
 LIBS = -lmax7301 -lsimplespi
 
 all: demo udp-receiver

@@ -1,1 +1,3 @@
-while [ true ]; do netcat -6 -l -p 2323 > /tmp/foo-image && ./display /tmp/foo-image; done
+#!/bin/bash
+
+while [ true ]; do receive-file.py /run/shm/foo-image-nc; cp /run/shm/foo-image-nc /run/shm/foo-image; /home/pi/flipdots/scripts/display /run/shm/foo-image; rm /run/shm/foo-image-nc; done

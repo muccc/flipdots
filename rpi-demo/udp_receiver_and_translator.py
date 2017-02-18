@@ -1,19 +1,20 @@
+#!/usr/bin/env python2.7
+import argparse
 import thread
 import socket
-import pygame
-from pygame.locals import *
 from os import system
 from time import sleep
 from threading import Thread
 
 
 class PowerManager(Thread):
-    def __init__(self, timeouttime=60):
+    def __init__(self, timeouttime=60, startuptime=3):
         Thread.__init__(self)
         self.running = False
         self.state = False
         self.timer = 0
         self.timeouttime = timeouttime
+        self.startuptime = startuptime
         self.start()
        
     def run(self):
@@ -62,7 +63,7 @@ class PowerManager(Thread):
 
     def sleepIfIsNotPowered(self):
         if self.isNotPowered():
-            sleep(3)
+            sleep(self.startuptime)
 
     
 
@@ -70,21 +71,25 @@ class PowerManager(Thread):
 
 class matrixMapping():
     def __init__(self, 
-                 udpPort = 2323):
+                udpPort = 2323, outputPort = 2342, zeile2DMappingRequired = True,
+                powerTimeout = 60, startupTimeout = 3):
         self.udpPort = udpPort
-        self.outputport = 2342
+        self.outputPort = outputPort
+        self.zeile2DMappingRequired = zeile2DMappingRequired
+        self.powerTimeout = powerTimeout
+        self.startupTimeout = startupTimeout
         self.udpHostSocket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.udpHostSocket.bind(("", self.udpPort))
         self.udpHostSocket4 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.udpHostSocket4.bind(("", self.udpPort+1))
         self.outputSocket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
-        self.PowerThread = PowerManager()
+        self.PowerThread = PowerManager(timeouttime = self.powerTimeout, startuptime = self.startupTimeout)
 
 
     def run(self):
-	thread.start_new_thread ( self.RunServer, () )
-	thread.start_new_thread ( self.RunServer4, () )
-	#self.RunServer()
+        thread.start_new_thread ( self.RunServer, () )
+        thread.start_new_thread ( self.RunServer4, () )
+        #self.RunServer()
 
     def RunServer(self):
         try: 
@@ -107,11 +112,12 @@ class matrixMapping():
             self.PowerThread.stopThisThread()
 
     def translateAndSend(self, imageArray):
-        imageArray = self.doZeile2DMapping(imageArray)
+        if self.zeile2DMappingRequired:
+            imageArray = self.doZeile2DMapping(imageArray)
         packet =  str(bytearray([matrixMapping.__list2byte(imageArray[i*8:i*8+8]) for i in range(len(imageArray)/8)]))
     
         self.PowerThread.notify()
-        self.outputSocket.sendto(packet, ("localhost",2342))
+        self.outputSocket.sendto(packet, ("localhost", self.outputPort))
 
         
 
@@ -206,8 +212,12 @@ class ImageArrayAdapter():
 
      
 if __name__ == '__main__':
-    matrixMapping(udpPort=2323).run()
-        
-
-
-
+    parser = argparse.ArgumentParser(description='Flipdot Power Control Middleware')
+    parser.add_argument('--listening-port', '-l', type=int, default=2323, help='Port to listen on for incoming packets')
+    parser.add_argument('--output-port', '-o', type=int, default=2342, help='Port to send packets to')
+    parser.add_argument('--power-timeout', '-p', type=int, default=60, help='Timeout specifying how long the power supply sould remain active')
+    parser.add_argument('--startup-timeout', '-s', type=int, default=3, help='Timeout specifying how long the application should wait for the power supply to boot before sending packets')
+    parser.add_argument('--skipZeile2DMapping', '-?', action='store_true', help='Do not require Zeile specific remapping of packet contents')
+    args = parser.parse_args()
+ 
+    matrixMapping(udpPort=args.listening_port, outputPort=args.output_port, zeile2DMappingRequired = not args.skipZeile2DMapping, powerTimeout=args.power_timeout, startupTimeout=args.startup_timeout).run()

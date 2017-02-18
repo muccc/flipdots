@@ -1,7 +1,8 @@
 import socket, time, math
 from random import randint
 
-UDPHOST="2001:7f0:3003:cafe:222:f9ff:fe01:c65"
+#UDPHOST="2001:7f0:3003:cafe:222:f9ff:fe01:c65"
+UDPHOST="::1"
 UDPPORT=2323
 
 SIZE_Y = 16

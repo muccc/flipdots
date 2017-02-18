@@ -1,4 +1,4 @@
-CFLAGS = -O3 -Wall -Werror
+CFLAGS = -O3 -Wall -Werror -g
 LIBS = -lsimplespi
 
 all: libmax7301.a max7301-test
