@@ -9,7 +9,9 @@ convert $1 -resize 144x120 -gravity center -background black -extent 144x120 -ro
 pnminvert $1.pbm > $1.inv.pbm
 tail -n +3 $1.inv.pbm > $1.bin
 
-dd if=$1.bin skip=0 bs=720 count=1 2>/dev/null | nc -u -w 1 2001:7f0:3003:235e:ba27:ebff:fe86:8697 2323 &
-dd if=$1.bin skip=1 bs=720 count=1 2>/dev/null | nc -u -w 1 2001:7f0:3003:235e:ba27:ebff:fe23:60d7 2323 &
-dd if=$1.bin skip=2 bs=720 count=1 2>/dev/null | nc -u -w 1 2001:7f0:3003:235e:ba27:ebff:fe71:dd32 2323 &
+dd if=$1.bin skip=0 bs=720 count=1 2>/dev/null | socat - UDP:[fe80::ba27:ebff:feb9:db12%eth0]:2323 &
+dd if=$1.bin skip=1 bs=720 count=1 2>/dev/null | socat - UDP:[fe80::ba27:ebff:fe23:60d7%eth0]:2323 &
+dd if=$1.bin skip=2 bs=720 count=1 2>/dev/null | socat - UDP:[fe80::ba27:ebff:fe71:dd32%eth0]:2323 &
 
+echo $1.pbm
+#cat $1.pbm | nc  brezn.muc.ccc.de 2324

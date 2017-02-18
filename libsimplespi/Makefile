@@ -1,4 +1,4 @@
-CFLAGS = -O3 -Wall -Werror
+CFLAGS = -O3 -Wall -Werror -g
 
 all: libsimplespi.a simplespi-test
 
