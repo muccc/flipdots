@@ -26,13 +26,13 @@ class Clock:
         time = datetime.datetime.now().time()
 
         image[self.center[0]][self.center[1]] = 1
-        hour_coords = self.circlePoint(math.radians((((time.hour%12)/12.) if time.hour else 0)*360 + 180 + (time.minute/2)))
-        minute_coords = self.circlePoint(math.radians(time.minute*6+180))
-        second_coords = self.circlePoint(math.radians(time.second*6+180))
+        hour_coords = self.circlePoint(- math.radians((((time.hour%12)/12.) if time.hour else 0)*360 + 180 + (time.minute/2)))
+        minute_coords = self.circlePoint(- math.radians(time.minute*6+180))
+        second_coords = self.circlePoint(- math.radians(time.second*6+180))
 
         for i in range(60):
             degree = i*6 + 90
-            radian = math.radians(degree)
+            radian = - math.radians(degree)
             coords = self.circlePoint(radian)
 
             if not i % 5:
@@ -43,11 +43,6 @@ class Clock:
         self.addLine(image, self.center, hour_coords, int(self.radius / 3), 1)
         self.addLine(image, self.center, minute_coords, int(self.radius / 2))
         self.addLine(image, self.center, second_coords, self.radius - 3)
-
-        tmp_image = []
-        for x in range(self.sizex):
-            tmp_image.append([image[x][y-1] for y in range(self.sizey, 0, -1)])
-        image = tmp_image
 
         for x in range(self.radius*2):
             line = ""
