@@ -1,23 +1,36 @@
 #!/usr/bin/env python2
 from FlipdotAPI.FlipdotMatrix import FlipdotMatrix, FlipdotImage
 from time import sleep
+import argparse
 import datetime
 import math
 
 class Clock:
-    def __init__(self, sizex = 144, sizey = 120, radius = 50, udpHostsAndPorts = []):
-        self.matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey))
+    def __init__(self, sizex = 144, sizey = 120, radius = 50, udpHostsAndPorts = [],
+            hour_hand = True, minute_hand = True, second_hand = True, console_out = False,
+            run_once = False):
+        self.matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey)) if len(udpHostsAndPorts) != 0 else None
         self.sizex = sizex
         self.sizey = sizey
         self.radius = radius
         self.center = (int(self.sizex/2), int(self.sizey/2))
+        self.hour_hand = hour_hand
+        self.minute_hand = minute_hand
+        self.second_hand = second_hand
+        self.console_out = console_out
+        self.flipdot_out = len(udpHostsAndPorts) != 0
+        self.run_once = run_once
 
     def loop(self):
+        sleep_time = 1 if self.second_hand else 60
         try:
             while True:
                 flipImage = FlipdotImage(self.generateClockImage())
-                self.matrix.show(flipImage)
-                sleep(1)
+                if self.flipdot_out:
+                    self.matrix.show(flipImage)
+                if self.run_once:
+                    break
+                sleep(sleep_time)
         except KeyboardInterrupt:
             return
 
@@ -40,15 +53,19 @@ class Clock:
             else:
                 self.addLine(image, coords, self.center, 1)
 
-        self.addLine(image, self.center, hour_coords, int(self.radius / 3), 1)
-        self.addLine(image, self.center, minute_coords, int(self.radius / 2))
-        self.addLine(image, self.center, second_coords, self.radius - 3)
+        if self.hour_hand:
+            self.addLine(image, self.center, hour_coords, int(self.radius / 3), 1)
+        if self.minute_hand:
+            self.addLine(image, self.center, minute_coords, int(self.radius / 2))
+        if self.second_hand:
+            self.addLine(image, self.center, second_coords, self.radius - 3)
 
-        for x in range(self.radius*2):
-            line = ""
-            for y in range(self.radius*2):
-                line = line + ("." if image[(self.center[0]-self.radius)+x][(self.center[1]-self.radius)+y] else " ")
-            print line
+        if self.console_out:
+            for x in range(self.radius*2):
+                line = ""
+                for y in range(self.radius*2):
+                    line = line + ("." if image[(self.center[0]-self.radius)+x][(self.center[1]-self.radius)+y] else " ")
+                print line
 
         return image
 
@@ -92,7 +109,26 @@ class Clock:
         return tuple([i*multiplier for i in v])
 
 if __name__=='__main__':
-    clock = Clock(udpHostsAndPorts = [("2001:7f0:3003:235e:ba27:ebff:feb9:db12", 2323),
-                                    ("2001:7f0:3003:235e:ba27:ebff:fe23:60d7", 2323),
-                                    ("2001:7f0:3003:235e:ba27:ebff:fe71:dd32", 2323)])
+    parser = argparse.ArgumentParser(description='Clock for Flipdot')
+    parser.add_argument('--no-hour', '-H', action='store_true', help='Do not display hour hand')
+    parser.add_argument('--no-minute', '-M', action='store_true', help='Do not display minute hand')
+    parser.add_argument('--no-second', '-S', action='store_true', help='Do not display second hand')
+    parser.add_argument('--console-out', '-c', action='store_true', help='Print clock on command line on each update')
+    parser.add_argument('--run-once', '-r', action='store_true', help='Run only once, useful in combination with watch command')
+    parser.add_argument('--sizex', type=int, default=144, help='Size on the x axis')
+    parser.add_argument('--sizey', type=int, default=120, help='Size on the y axis')
+    parser.add_argument('--radius', type=int, default=60, help='Radius of the clock')
+    parser.add_argument('flipdotpanels', nargs='*', help='List of ip46:port strings for the flipdotpanels')
+    args = parser.parse_args()
+
+    hostsAndPorts = []
+    for ipPort in args.flipdotpanels:
+        ipPort = ipPort.replace("[","").replace("]","").rsplit(':',1)
+        ipPort = (ipPort[0],int(ipPort[1]))
+        hostsAndPorts.append(ipPort)
+
+    clock = Clock(args.sizex,args.sizey,args.radius,
+            udpHostsAndPorts = hostsAndPorts, hour_hand = not args.no_hour,
+            minute_hand = not args.no_minute, second_hand = not args.no_second,
+            console_out = args.console_out, run_once = args.run_once)
     clock.loop()
