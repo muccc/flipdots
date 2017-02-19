@@ -10,9 +10,9 @@ wandheight = 120
 app = Flask(__name__)
 matrix = FlipdotMatrix(
 	udpHostsAndPorts = [
-		("2001:7f0:3003:235e:ba27:ebff:feb9:db12",2323),
-		("2001:7f0:3003:235e:ba27:ebff:fe23:60d7", 2323),
-		("2001:7f0:3003:235e:ba27:ebff:fe71:dd32", 2323)
+		("fe80::ba27:ebff:feb9:db12",2323),
+		("fe80::ba27:ebff:fe23:60d7", 2323),
+		("fe80::ba27:ebff:fe71:dd32", 2323)
 		],
 	imageSize=(wandwidth, wandheight),
 	transposed = True
@@ -58,4 +58,4 @@ def chess():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='::', port=4242)
