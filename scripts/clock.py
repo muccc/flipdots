@@ -39,9 +39,9 @@ class Clock:
         time = datetime.datetime.now().time()
 
         image[self.center[0]][self.center[1]] = 1
-        hour_coords = self.circlePoint(- math.radians((((time.hour%12)/12.) if time.hour else 0)*360 + 180 + (time.minute/2)))
-        minute_coords = self.circlePoint(- math.radians(time.minute*6+180))
-        second_coords = self.circlePoint(- math.radians(time.second*6+180))
+        hour_coords = self.circlePoint(math.radians((((time.hour%12)/12.) if time.hour else 0)*360 + 270 + (time.minute/2)))
+        minute_coords = self.circlePoint(math.radians(time.minute*6+270))
+        second_coords = self.circlePoint(math.radians(time.second*6+270))
 
         for i in range(60):
             degree = i*6 + 90
@@ -60,11 +60,18 @@ class Clock:
         if self.second_hand:
             self.addLine(image, self.center, second_coords, self.radius - 3)
 
+        tmp_image = []
+        for y in range(self.sizey):
+            tmp_image.append([])
+            for x in range(self.sizex):
+                tmp_image[-1].append(image[x][y])
+        image = tmp_image
+
         if self.console_out:
-            for x in range(self.radius*2):
+            for y in range(self.radius*2):
                 line = ""
-                for y in range(self.radius*2):
-                    line = line + ("." if image[(self.center[0]-self.radius)+x][(self.center[1]-self.radius)+y] else " ")
+                for x in range(self.radius*2):
+                    line = line + ("." if image[(self.center[1]-self.radius)+y][(self.center[0]-self.radius)+x] else " ")
                 print line
 
         return image
