@@ -8,7 +8,7 @@ import math
 class Clock:
     def __init__(self, sizex = 144, sizey = 120, radius = 50, udpHostsAndPorts = [],
             hour_hand = True, minute_hand = True, second_hand = True, console_out = False,
-            run_once = False):
+            run_once = False, update_interval = 0):
         self.matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey)) if len(udpHostsAndPorts) != 0 else None
         self.sizex = sizex
         self.sizey = sizey
@@ -19,10 +19,10 @@ class Clock:
         self.second_hand = second_hand
         self.console_out = console_out
         self.flipdot_out = len(udpHostsAndPorts) != 0
+        self.update_interval = update_interval if update_interval != 0 else (1 if self.second_hand else 30)
         self.run_once = run_once
 
     def loop(self):
-        sleep_time = 1 if self.second_hand else 60
         try:
             while True:
                 flipImage = FlipdotImage(self.generateClockImage())
@@ -30,7 +30,7 @@ class Clock:
                     self.matrix.show(flipImage)
                 if self.run_once:
                     break
-                sleep(sleep_time)
+                sleep(self.update_interval)
         except KeyboardInterrupt:
             return
 
@@ -58,7 +58,7 @@ class Clock:
         if self.minute_hand:
             self.addLine(image, self.center, minute_coords, int(self.radius / 2))
         if self.second_hand:
-            self.addLine(image, self.center, second_coords, self.radius - 3)
+            self.addLine(image, self.center, second_coords, self.radius - int(self.radius/8.))
 
         tmp_image = []
         for y in range(self.sizey):
@@ -120,6 +120,7 @@ if __name__=='__main__':
     parser.add_argument('--no-hour', '-H', action='store_true', help='Do not display hour hand')
     parser.add_argument('--no-minute', '-M', action='store_true', help='Do not display minute hand')
     parser.add_argument('--no-second', '-S', action='store_true', help='Do not display second hand')
+    parser.add_argument('--update-interval', '-i', type=float, default=0, help='Interval in seconds between updating clock')
     parser.add_argument('--console-out', '-c', action='store_true', help='Print clock on command line on each update')
     parser.add_argument('--run-once', '-r', action='store_true', help='Run only once, useful in combination with watch command')
     parser.add_argument('--sizex', type=int, default=144, help='Size on the x axis')
@@ -137,5 +138,6 @@ if __name__=='__main__':
     clock = Clock(args.sizex,args.sizey,args.radius,
             udpHostsAndPorts = hostsAndPorts, hour_hand = not args.no_hour,
             minute_hand = not args.no_minute, second_hand = not args.no_second,
-            console_out = args.console_out, run_once = args.run_once)
+            console_out = args.console_out, run_once = args.run_once,
+            update_interval = args.update_interval)
     clock.loop()
