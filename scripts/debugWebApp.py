@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from flask import Flask
 from flask import render_template
 
@@ -58,4 +59,4 @@ def chess():
 
 
 if __name__ == "__main__":
-    app.run(host='::', port=4242)
+    app.run(host='::', port=80)
