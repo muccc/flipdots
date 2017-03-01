@@ -52,8 +52,10 @@ static void sreg_fill_row(uint8_t *data, int count);
 static void sreg_fill_col(uint8_t *data, int count);
 
 static void strobe(void);
-static void flip_white(void);
-static void flip_black(void);
+static void flip_white_start(void);
+static void flip_white_stop(void);
+static void flip_black_start(void);
+static void flip_black_stop(void);
 
 uint8_t diff_to_0(uint8_t old, uint8_t new);
 uint8_t diff_to_1(uint8_t old, uint8_t new);
@@ -163,22 +165,45 @@ static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
 	uint8_t row_select[DISP_ROWS/8];
+	int row;
+	uint8_t *row_data_to_0, *row_data_to_1;
 
-	for (int row = 0; row < DISP_ROWS; ++row) {
-		uint8_t *row_data_to_0 = to_0 + row * DISP_COLS/8;
-		uint8_t *row_data_to_1 = to_1 + row * DISP_COLS/8;
-		
-		memset(row_select, 0, DISP_ROWS/8);
-		SETBIT(row_select, row);			   /* Set selected row */
-		sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
-		
-		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+	// Select the first row
+	row = 0;	
+	memset(row_select, 0, DISP_ROWS/8);
+	SETBIT(row_select, row);			   /* Set selected row */
+	sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
+
+	// Pre-fill the data for row 0
+	row_data_to_0 = to_0 + row * DISP_COLS/8;
+	sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+
+	while(row < DISP_ROWS) {
+		// Apply the shift register content for the black pixels
 		strobe();
-	    flip_black();
+		flip_black_start();
 
+		row_data_to_1 = to_1 + row * DISP_COLS/8;
 		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
+#ifdef FLIP_DELAY_BLACK
+		_delay_us(FLIP_DELAY_BLACK);
+#endif
+
+		flip_black_stop();
+		// Apply the shift register content for the white pixels
 		strobe();
-		flip_white();
+		flip_white_start();
+
+		// Move one row further
+		sreg_push_bit(COL, 0);
+		row_data_to_0 = to_0 + (row+1) * DISP_COLS/8;
+		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+#ifdef FLIP_DELAY_WHITE
+		_delay_us(FLIP_DELAY_WHITE);
+#endif
+
+		flip_white_stop();
+		row++;
 	}
 }
 
@@ -253,31 +278,35 @@ strobe(void)
 }
 
 static void
-flip_white(void)
+flip_white_start(void)
 {
-    //max7301_flush_history();
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, 1);
-    //max7301_flush_history();
-
-	_delay_us(FLIP_DELAY_WHITE);
-
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
-    //max7301_flush_history();
+    max7301_flush_history();
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 1);
+    max7301_flush_history();
 }
 
 static void
-flip_black(void)
+flip_white_stop(void)
 {
-    //max7301_flush_history();
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, 1);
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
-    //max7301_flush_history();
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    max7301_flush_history();
+}
 
-	_delay_us(FLIP_DELAY_BLACK);
+static void
+flip_black_start(void)
+{
+    max7301_flush_history();
+    max7301_set_pin(pinning[active_pinning].oe_black, 1);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    max7301_flush_history();
+}
 
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
-    //max7301_flush_history();
+static void
+flip_black_stop(void)
+{
+    max7301_set_pin(pinning[active_pinning].oe_black, 0);
+    max7301_set_pin(pinning[active_pinning].oe_white, 0);
+    max7301_flush_history();
 }
