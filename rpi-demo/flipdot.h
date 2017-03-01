@@ -41,8 +41,8 @@ typedef struct {
     int clk_row;
 } flipdot_pinning;
 
-#define FLIP_DELAY_BLACK 3000			/* us */
-#define FLIP_DELAY_WHITE 1500			/* us */
+//#define FLIP_DELAY_BLACK 3000			/* us */
+//#define FLIP_DELAY_WHITE 1500			/* us */
 #define STROBE_DELAY 1			/* us */
 
 #define MODULE_ROWS 16
