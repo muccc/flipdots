@@ -25,19 +25,19 @@ def minipage(msg):
 
 @app.route("/")
 def hello():
-	return minipage("") 
+	return minipage("")
 
 @app.route("/reset")
 def reset():
 	matrix.resetAll()
-	return minipage("reseted all") 
+	return minipage("reseted all")
 
 @app.route("/black")
 def black():
 	blackImage = FlipdotImage.newBlackFlipdotImage(wandwidth, wandheight)
 	matrix.show(blackImage)
-	return minipage("blacked all") 
-	
+	return minipage("blacked all")
+
 @app.route("/white")
 def white():
 	whiteImage = FlipdotImage.newWhiteFlipdotImage(wandwidth, wandheight)
@@ -50,7 +50,7 @@ def chess():
 	for y in range(wandheight):
 		for x in range(wandwidth):
 			imageArray[y][x] = (x+y)%2
-				
+
 	image = FlipdotImage(imageArray)
 	matrix.show(image)
 	return minipage("chess!")
