@@ -28,8 +28,9 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-extern int usleep (__useconds_t __useconds);
-#define _delay_us(x) usleep(x)
+//extern int usleep (__useconds_t __useconds);
+//#define _delay_us(x) usleep(x)
+#define _delay_us(x) bcm2835_delayMicroseconds(x)
 
 
 #define ISBITSET(x,i) ((x[i>>3] & (1<<(i&7)))!=0)
@@ -68,8 +69,8 @@ static void display_frame_differential(uint8_t *to_0, uint8_t *to_1);
 flipdot_pinning pinning[CONFIG_BUS_COUNT] =
 {
     {.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_05, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_13, .oe_black = RPI_V2_GPIO_P1_18, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
-    {.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_07, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_15, .oe_black = RPI_V2_GPIO_P1_19, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
-    {.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_11, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_16, .oe_black = RPI_V2_GPIO_P1_21, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
+    //{.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_07, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_15, .oe_black = RPI_V2_GPIO_P1_19, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
+    //{.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_11, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_16, .oe_black = RPI_V2_GPIO_P1_21, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
 };
 
 static uint8_t flipper[256];
@@ -161,6 +162,7 @@ diff_to_1(uint8_t old, uint8_t new) {
 	return ~(~old & new);
 }
 
+#if 0
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
@@ -206,17 +208,44 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 		row++;
 	}
 }
+#else
+static void
+display_frame_differential(uint8_t *to_0, uint8_t *to_1)
+{
+	uint8_t row_select[DISP_ROWS/8];
+
+	for (int row = 0; row < DISP_ROWS; ++row) {
+		uint8_t *row_data_to_0 = to_0 + row * DISP_COLS/8;
+		uint8_t *row_data_to_1 = to_1 + row * DISP_COLS/8;
+		
+		memset(row_select, 0, DISP_ROWS/8);
+		SETBIT(row_select, row);			   /* Set selected row */
+		sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
+		
+		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+		strobe();
+		flip_black_start();
+		_delay_us(FLIP_DELAY_BLACK);
+		flip_black_stop();
+
+		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
+		strobe();
+		flip_white_start();
+		_delay_us(FLIP_DELAY_WHITE);
+		flip_white_stop();
+	}
+}
+#endif
 
 /* Output bit on reg and pulse clk signal */
 static void
 sreg_push_bit(enum sreg reg, uint8_t bit)
 {
+    volatile int i;
     bcm2835_gpio_write(DATA(reg), bit);
-    //max7301_step();
-	_delay_us(CLK_DELAY);
+    for(i=0; i<CLK_DELAY; i++);
     bcm2835_gpio_write(CLK(reg), 1);
-    //max7301_step();
-	_delay_us(CLK_DELAY);
+    for(i=0; i<CLK_DELAY; i++);
     bcm2835_gpio_write(CLK(reg), 0);
 }
 
@@ -271,10 +300,8 @@ static void
 strobe(void)
 {
     bcm2835_gpio_write(pinning[active_pinning].strobe, 1);
-    //max7301_flush_history();
 	_delay_us(STROBE_DELAY);
     bcm2835_gpio_write(pinning[active_pinning].strobe, 0);
-    //max7301_flush_history();
 }
 
 static void
