@@ -55,8 +55,23 @@ def chess():
     matrix.show(image)
     return minipage("chess!")
 
-
-
+@app.route("/png", methods=['POST'])
+def png():
+    from PIL import Image
+    if request.method == 'POST':
+        png = request.form['png']
+        png = png.split(",",1)[1]
+        im = Image.open(BytesIO(base64.b64decode(png)))
+        im.rotate(90)
+        imageArray = [[0 for x in range(wandwidth)] for y in range(wandheight)]
+        for y in range(wandheight):
+            for x in range(wandwidth):
+                imageArray[y][x] = 1 if im.getpixel((x,y))[0] == 255 else 0
+        image = FlipdotImage(imageArray)
+        matrix.show(image)
+        return ""
+    else:
+        return redirect("/")
 
 if __name__ == "__main__":
     app.run(host='::', port=80)
