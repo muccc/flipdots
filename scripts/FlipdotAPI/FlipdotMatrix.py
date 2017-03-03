@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 import socket
-from FlipdotAPI import config
-from FlipdotAPI.font import font8px
+try:
+    from FlipdotAPI import config
+    from FlipdotAPI.font import font8px
+except ImportError:
+    import config
+    from font import font8px
 
 class FlipdotMatrix():
     def __init__(self,
