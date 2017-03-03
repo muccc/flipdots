@@ -4,3 +4,6 @@
 [submodule "netfbd"]
 	path = netfbd
 	url = git://github.com/muccc/netfbd.git
+[submodule "scripts/FlipdotAPI"]
+	path = scripts/FlipdotAPI
+	url = git://github.com/muccc/FlipdotAPI.git
