@@ -1,13 +1,13 @@
+#!/usr/bin/env python2
 import socket
+import config
 from font import font8px
 
 class FlipdotMatrix():
     def __init__(self,
 
-                 
-                 udpHostsAndPorts = [("2001:67c:20a1:1095:ba27:ebff:fe86:8697",2323),
-                                     ("2001:67c:20a1:1095:ba27:ebff:fe23:60d7", 2323),
-                                     ("2001:67c:20a1:1095:ba27:ebff:fe71:dd32", 2323)],
+
+                 udpHostsAndPorts = config.panelAddressArray,
                  imageSize=(144, 120),
                  transposed = True
                  ):
