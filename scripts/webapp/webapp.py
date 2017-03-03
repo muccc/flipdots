@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+import base64
+from io import BytesIO
 from flask import Flask
-from flask import render_template
+from flask import redirect, render_template, request
 
 from FlipdotAPI.FlipdotMatrix import FlipdotMatrix, FlipdotImage
 
