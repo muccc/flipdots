@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from FlipdotAPI.FlipdotMatrix import FlipdotMatrix, FlipdotImage
 from time import sleep
 import argparse
@@ -8,8 +8,16 @@ import math
 class Clock:
     def __init__(self, sizex = 144, sizey = 120, radius = 50, udpHostsAndPorts = [],
             hour_hand = True, minute_hand = True, second_hand = True, console_out = False,
-            run_once = False, update_interval = 0):
-        self.matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey)) if len(udpHostsAndPorts) != 0 else None
+            run_once = False, update_interval = 0, api_defaults = False):
+        if len(udpHostsAndPorts) != 0:
+            self.matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey))
+            self.flipdot_out = True
+        elif api_defaults:
+            self.matrix = FlipdotMatrix(imageSize=(sizex,sizey))
+            self.flipdot_out = True
+        else:
+            self.matrix = None
+            self.flipdot_out = False
         self.sizex = sizex
         self.sizey = sizey
         self.radius = radius
@@ -18,7 +26,6 @@ class Clock:
         self.minute_hand = minute_hand
         self.second_hand = second_hand
         self.console_out = console_out
-        self.flipdot_out = len(udpHostsAndPorts) != 0
         self.update_interval = update_interval if update_interval != 0 else (1 if self.second_hand else 30)
         self.run_once = run_once
 
@@ -72,7 +79,7 @@ class Clock:
                 line = ""
                 for x in range(self.radius*2):
                     line = line + ("." if image[(self.center[1]-self.radius)+y][(self.center[0]-self.radius)+x] else " ")
-                print line
+                print(line)
 
         return image
 
@@ -123,6 +130,7 @@ if __name__=='__main__':
     parser.add_argument('--update-interval', '-i', type=float, default=0, help='Interval in seconds between updating clock')
     parser.add_argument('--console-out', '-c', action='store_true', help='Print clock on command line on each update')
     parser.add_argument('--run-once', '-r', action='store_true', help='Run only once, useful in combination with watch command')
+    parser.add_argument('--use-endpoint-defaults', '-d', action='store_true', help='Use the default Flipdot host/port data from FlipdotAPI')
     parser.add_argument('--sizex', type=int, default=144, help='Size on the x axis')
     parser.add_argument('--sizey', type=int, default=120, help='Size on the y axis')
     parser.add_argument('--radius', type=int, default=60, help='Radius of the clock')
@@ -139,5 +147,5 @@ if __name__=='__main__':
             udpHostsAndPorts = hostsAndPorts, hour_hand = not args.no_hour,
             minute_hand = not args.no_minute, second_hand = not args.no_second,
             console_out = args.console_out, run_once = args.run_once,
-            update_interval = args.update_interval)
+            update_interval = args.update_interval, api_defaults = args.use_endpoint_defaults)
     clock.loop()
