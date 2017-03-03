@@ -23,7 +23,7 @@ matrix = FlipdotMatrix(
 
 
 def minipage(msg):
-    return "<html><head><title>FlipdotDebugPage</title></head><body <body style='font-size:6vh; line-height:2em;'><h3>"+msg+"</h3><ul><li><a href='/reset'>reset all</a></li><li><a href='/white'>white</a></li><li><a href='/black'>black</a></li><li><a href='/chess'>chess</a></li></ul></body></html>"
+    return "<html><head><title>FlipdotDebugPage</title></head><body <body style='font-size:6vh; line-height:2em;'><h3>"+msg+"</h3><ul><li><a href='/reset'>reset all</a></li><li><a href='/white'>white</a></li><li><a href='/black'>black</a></li><li><a href='/chess'>chess</a></li><li><a href='/static/flipdot-web-editor/index.html'>Image App</a></li></ul></body></html>"
 
 @app.route("/")
 def hello():
