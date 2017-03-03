@@ -4,6 +4,7 @@ with import <nixpkgs> {}; {
     buildInputs = [
       python2
       python2Packages.flask
+      python2Packages.pillow
     ];
   };
 }
