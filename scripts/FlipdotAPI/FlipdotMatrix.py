@@ -115,52 +115,53 @@ class FlipdotImage(object):
             newImageLineNr = lineNr-yPos
             if newImageLineNr >= 0 and flipdotImage.height > newImageLineNr:
                 self.__blitLineAtPosition(flipdotImage, lineNr, newImageLineNr, xPos, yPos)
-    
+
     def __blitLineAtPosition(self, flipdotImage, lineNr, newImageLineNr, xPos, yPos):
         for rowNr in range(self.width):
             newImageRowNr = rowNr - xPos
             if newImageRowNr >= 0 and flipdotImage.width > newImageRowNr:
                 self.rowArrayOfLineArraysOfPixels[lineNr][rowNr] = flipdotImage.rowArrayOfLineArraysOfPixels[newImageLineNr][newImageRowNr]
 
-    def blitTextAtPosition(self, text, autoLineBreak = False, xPos = 0, yPos = 0, __indentXPos=None):
-        if __indentXPos==None:
-            __indentXPos = xPos
+    def blitTextAtPosition(self, text, autoLineBreak = False, xPos = 0, yPos = 0):
+        indentXPos = xPos
 
-        if len(text) <= 0:
-            return
-        
-        letterImage = self.__getLetterImageForNextLetter(text)
-        
-        if self.__isLineBreakRequired(text, autoLineBreak, letterImage, xPos):
-            xPos = __indentXPos
-            yPos = yPos + font8px["lineheight"]
-            
-        self.blitImageAtPosition(letterImage, xPos, yPos)
-        
-        nextLetterXPos = xPos + letterImage.width + font8px["whitespace"]
-        self.blitTextAtPosition(text[1:], autoLineBreak, nextLetterXPos, yPos, __indentXPos)
-    
-    def __isLineBreakRequired(self, text, autoLineBreak, letterImage, xPos):
-        if text[:1] == "\n":
+        for char in text:
+            letterImage = self.__getLetterImageForCharacter(char)
+
+            if self.__isLineBreakRequired(char, autoLineBreak, letterImage, xPos):
+                xPos = indentXPos
+                yPos = yPos +font8px["lineheight"]
+
+            self.blitImageAtPosition(letterImage, xPos, yPos)
+
+            xPos = xPos + letterImage.width + font8px["whitespace"]
+
+    def __isLineBreakRequired(self, char, autoLineBreak, letterImage, xPos):
+        if char == "\n":
             return True
         elif autoLineBreak and self.__isEndOfLineReached(letterImage, xPos):
             return True
         else:
             return False
-                
+
     def __isEndOfLineReached(self, letterImage, xPos):
         return letterImage.width > self.width-xPos
 
     def __getLetterImageForNextLetter(self, text):
-        nextLetter = text[:1].upper()
-        if not nextLetter in font8px:
-            nextLetter="?"
-        return FlipdotImage(font8px[nextLetter])
+        nextLetter = text[:1]
+        return self.__getLetterImageForCharacter(nextLetter)
+
+    def __getLetterImageForCharacter(self, char, uppercase = True):
+        if uppercase:
+            char = char.upper()
+        if not char in font8px:
+            char = "?"
+        return FlipdotImage(font8px[char])
 
     def serializeImageArray(self, transposed = False):
         if transposed:
             return self.__serializeTransposedImageArray()
-        
+
         imageArray = []
         for y in range(self.height):
             for x in range(self.width):
