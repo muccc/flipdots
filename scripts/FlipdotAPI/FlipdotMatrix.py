@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import socket
-import config
-from font import font8px
+from FlipdotAPI import config
+from FlipdotAPI.font import font8px
 
 class FlipdotMatrix():
     def __init__(self,
@@ -15,7 +15,7 @@ class FlipdotMatrix():
         self.transposed = transposed
         self.udpHostsAndPorts=udpHostsAndPorts
         self.numberOfMatrixes = len(udpHostsAndPorts)
-        self.MatrixSize = (imageSize[0]/self.numberOfMatrixes, imageSize[1])
+        self.MatrixSize = (int(imageSize[0]/self.numberOfMatrixes), imageSize[1])
         self.flipdotImage = FlipdotImage.newBlackFlipdotImage(imageSize[0], imageSize[1])
 
     def resetAll(self):
@@ -87,7 +87,7 @@ class FlipdotMatrix():
 
     @staticmethod
     def __arrayToPacket(imageArray):
-        return str(bytearray([FlipdotMatrix.__list2byte(imageArray[i*8:i*8+8]) for i in range(len(imageArray)/8)]))
+        return bytearray([FlipdotMatrix.__list2byte(imageArray[i*8:i*8+8]) for i in range(int(len(imageArray)/8))])
 
     @staticmethod
     def __list2byte(ArrayOfBinaryInts):
