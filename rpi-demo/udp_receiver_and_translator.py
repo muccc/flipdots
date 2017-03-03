@@ -76,6 +76,7 @@ class matrixMapping():
         self.udpPort = udpPort
         self.outputPort = outputPort
         self.zeile2DMappingRequired = zeile2DMappingRequired
+        self.wand2DMappingRequired = not zeile2DMappingRequired
         self.powerTimeout = powerTimeout
         self.startupTimeout = startupTimeout
         self.udpHostSocket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
@@ -114,6 +115,10 @@ class matrixMapping():
     def translateAndSend(self, imageArray):
         if self.zeile2DMappingRequired:
             imageArray = self.doZeile2DMapping(imageArray)
+
+        if self.wand2DMappingRequired:
+            imageArray = self.doWand2DMapping(imageArray)
+
         packet =  str(bytearray([matrixMapping.__list2byte(imageArray[i*8:i*8+8]) for i in range(len(imageArray)/8)]))
     
         self.PowerThread.notify()
@@ -188,6 +193,39 @@ class matrixMapping():
         return linearOutput
 
 
+    def doWand2DMapping(self, linearInput):
+        ## spilt to several panel-matrixes
+        panels = []
+        for i in range(9):
+            panels.append([])
+            for y in range(120):
+                panels[i].append([])
+        
+        for y in range (120):
+            for i in range(9):
+                for x in range(144):
+                    if len(linearInput) > 0:
+                         panels[i][y].append(linearInput.pop(0))
+                    else:
+                         panels[i][y].append(0)
+
+                panels[i][y].reverse()
+
+
+        ## transpose panels
+        for i in range(11):
+            panels[i] = zip(*panels[i])
+
+        linearOutput = []
+            
+        for y in range(144):
+            for i in range(9):
+                for x in range(120):
+                    linearOutput.append(rightpanels[i][y][x])
+
+        return linearOutput
+
+
 
 class ImageArrayAdapter():
     def __init__(self):
@@ -217,7 +255,10 @@ if __name__ == '__main__':
     parser.add_argument('--output-port', '-o', type=int, default=2342, help='Port to send packets to')
     parser.add_argument('--power-timeout', '-p', type=int, default=60, help='Timeout specifying how long the power supply sould remain active')
     parser.add_argument('--startup-timeout', '-s', type=int, default=3, help='Timeout specifying how long the application should wait for the power supply to boot before sending packets')
-    parser.add_argument('--skipZeile2DMapping', '-?', action='store_true', help='Do not require Zeile specific remapping of packet contents')
+    parser.add_argument('--doWand2DMapping', '-w', action='store_true', help='This is not the Zeile, but the Wand. Do that specific remapping')
+
+
+    
     args = parser.parse_args()
  
-    matrixMapping(udpPort=args.listening_port, outputPort=args.output_port, zeile2DMappingRequired = not args.skipZeile2DMapping, powerTimeout=args.power_timeout, startupTimeout=args.startup_timeout).run()
+    matrixMapping(udpPort=args.listening_port, outputPort=args.output_port, zeile2DMappingRequired = not args.doWand2DMapping, powerTimeout=args.power_timeout, startupTimeout=args.startup_timeout).run()
