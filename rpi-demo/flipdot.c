@@ -40,10 +40,10 @@
 #define ISBITSET(x,i) ((x[i>>3] & (1<<(i&7)))!=0)
 #define SETBIT(x,i) x[i>>3]|=(1<<(i&7));
 
-#define DATA(reg)								\
-	((reg == ROW) ? pinning[active_pinning].data_row : pinning[active_pinning].data_col)
-#define CLK(reg)								\
-	((reg == ROW) ? pinning[active_pinning].clk_row : pinning[active_pinning].clk_col)
+#define DATA(reg)                                \
+    ((reg == ROW) ? pinning[active_pinning].data_row : pinning[active_pinning].data_col)
+#define CLK(reg)                                \
+    ((reg == ROW) ? pinning[active_pinning].clk_row : pinning[active_pinning].clk_col)
 
 static uint8_t buffer_a[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
 static uint8_t buffer_b[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
@@ -95,7 +95,7 @@ flipdot_init(void)
     if (!bcm2835_init())
         return 1;
 
-	/* init pins */
+    /* init pins */
     int i;
     for(i = 0; i < CONFIG_BUS_COUNT; i++) {
         active_pinning = i;
@@ -129,41 +129,41 @@ flipdot_init(void)
 void
 flipdot_data(uint8_t *frame, uint16_t size)
 {
-	uint8_t *tmp;
+    uint8_t *tmp;
 
-	memcpy(buffer_old[active_pinning], frame, size); /* Copy frame into buffer with old data */
+    memcpy(buffer_old[active_pinning], frame, size); /* Copy frame into buffer with old data */
     
     int i;
-	for(i = 0; i < size; i++) {
+    for(i = 0; i < size; i++) {
         uint8_t c = buffer_old[active_pinning][i];
         buffer_old[active_pinning][i] = flipper[c];
     }
 
-	tmp = buffer_old[active_pinning];				 /* swap pointers buffer_new[active_pinning] and buffer_old[active_pinning] */
-	buffer_old[active_pinning] = buffer_new[active_pinning];
-	buffer_new[active_pinning] = tmp;
-	
-	map_two_buffers(diff_to_0, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_0[active_pinning], DISP_BYTE_COUNT);
-	map_two_buffers(diff_to_1, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_1[active_pinning], DISP_BYTE_COUNT);
+    tmp = buffer_old[active_pinning];                 /* swap pointers buffer_new[active_pinning] and buffer_old[active_pinning] */
+    buffer_old[active_pinning] = buffer_new[active_pinning];
+    buffer_new[active_pinning] = tmp;
+    
+    map_two_buffers(diff_to_0, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_0[active_pinning], DISP_BYTE_COUNT);
+    map_two_buffers(diff_to_1, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_1[active_pinning], DISP_BYTE_COUNT);
 
-	display_frame_differential(buffer_to_0[active_pinning], buffer_to_1[active_pinning]);
+    display_frame_differential(buffer_to_0[active_pinning], buffer_to_1[active_pinning]);
 }
 
 static void
 map_two_buffers(uint8_t (*fun)(uint8_t, uint8_t), uint8_t a[], uint8_t b[], uint8_t dst[], unsigned int count) {
-	for (int i = 0; i < count; ++i) {
-		dst[i] = fun(a[i], b[i]);
-	}
+    for (int i = 0; i < count; ++i) {
+        dst[i] = fun(a[i], b[i]);
+    }
 }
 
 uint8_t
 diff_to_0(uint8_t old, uint8_t new) {
-	return old & ~new;
+    return old & ~new;
 }
 
 uint8_t
 diff_to_1(uint8_t old, uint8_t new) {
-	return ~(~old & new);
+    return ~(~old & new);
 }
 
 #if 1
@@ -203,66 +203,66 @@ timer_wait(uint32_t micros)
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
-	uint8_t row_select[DISP_ROWS/8];
-	int row;
-	uint8_t *row_data_to_0, *row_data_to_1;
+    uint8_t row_select[DISP_ROWS/8];
+    int row;
+    uint8_t *row_data_to_0, *row_data_to_1;
 
-	// Select the first row
-	row = 0;	
-	memset(row_select, 0, DISP_ROWS/8);
-	SETBIT(row_select, row);			   /* Set selected row */
-	sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
+    // Select the first row
+    row = 0;    
+    memset(row_select, 0, DISP_ROWS/8);
+    SETBIT(row_select, row);               /* Set selected row */
+    sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
 
-	// Pre-fill the data for row 0
-	row_data_to_0 = to_0 + row * DISP_COLS/8;
-	sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+    // Pre-fill the data for row 0
+    row_data_to_0 = to_0 + row * DISP_COLS/8;
+    sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
 
-	while(row < DISP_ROWS) {
-		// Apply the shift register content for the black pixels
-		strobe();
-		flip_black_start();
+    while(row < DISP_ROWS) {
+        // Apply the shift register content for the black pixels
+        strobe();
+        flip_black_start();
 
-		row_data_to_1 = to_1 + row * DISP_COLS/8;
-		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
+        row_data_to_1 = to_1 + row * DISP_COLS/8;
+        sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
 
-		flip_black_stop();
-		// Apply the shift register content for the white pixels
-		strobe();
-		flip_white_start();
+        flip_black_stop();
+        // Apply the shift register content for the white pixels
+        strobe();
+        flip_white_start();
 
-		// Move one row further
-		sreg_push_bit(COL, 0);
-		row_data_to_0 = to_0 + (row+1) * DISP_COLS/8;
-		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+        // Move one row further
+        sreg_push_bit(COL, 0);
+        row_data_to_0 = to_0 + (row+1) * DISP_COLS/8;
+        sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
 
-		flip_white_stop();
-		row++;
-	}
+        flip_white_stop();
+        row++;
+    }
 }
 #else
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
-	uint8_t row_select[DISP_ROWS/8];
+    uint8_t row_select[DISP_ROWS/8];
 
-	for (int row = 0; row < DISP_ROWS; ++row) {
-		uint8_t *row_data_to_0 = to_0 + row * DISP_COLS/8;
-		uint8_t *row_data_to_1 = to_1 + row * DISP_COLS/8;
-		
-		memset(row_select, 0, DISP_ROWS/8);
-		SETBIT(row_select, row);			   /* Set selected row */
-		sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
-		
-		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
-		strobe();
-		flip_black_start();
-		flip_black_stop();
+    for (int row = 0; row < DISP_ROWS; ++row) {
+        uint8_t *row_data_to_0 = to_0 + row * DISP_COLS/8;
+        uint8_t *row_data_to_1 = to_1 + row * DISP_COLS/8;
+        
+        memset(row_select, 0, DISP_ROWS/8);
+        SETBIT(row_select, row);               /* Set selected row */
+        sreg_fill(COL, row_select, DISP_ROWS); /* Fill row select shift register */
+        
+        sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
+        strobe();
+        flip_black_start();
+        flip_black_stop();
 
-		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
-		strobe();
-		flip_white_start();
-		flip_white_stop();
-	}
+        sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
+        strobe();
+        flip_white_start();
+        flip_white_stop();
+    }
 }
 #endif
 
@@ -299,21 +299,21 @@ sreg_push_bit(enum sreg reg, uint8_t bit)
 static void
 sreg_fill(enum sreg reg, uint8_t *data, int count)
 {
-	switch (reg) {
-		case ROW: sreg_fill_row(data, count); break;
-		case COL: sreg_fill_col(data, count); break;
-	}
+    switch (reg) {
+        case ROW: sreg_fill_row(data, count); break;
+        case COL: sreg_fill_col(data, count); break;
+    }
 }
 
 /* Fill col register with count bits from data LSB first */
 static void
 sreg_fill_col(uint8_t *data, int count)
 {
-	int i = 0;
-	while (i < count) {
-		sreg_push_bit(COL, ISBITSET(data, (count-i-1)));
-		++i;
-	}
+    int i = 0;
+    while (i < count) {
+        sreg_push_bit(COL, ISBITSET(data, (count-i-1)));
+        ++i;
+    }
 }
 
 /* TODO: generalize for more panels */
@@ -321,7 +321,7 @@ static void
 sreg_fill_row(uint8_t *data, int count)
 {
     /* This is necessary because the row
-	* register has 4 unmapped bits */
+    * register has 4 unmapped bits */
     int i;
     int bit = 0;
 
@@ -342,7 +342,7 @@ sreg_fill_row(uint8_t *data, int count)
         /* count-i-1 because the first bit needs to go last */
         sreg_push_bit(ROW, bit);
         c++;
-    }	
+    }    
 }
 
 static void
@@ -353,7 +353,7 @@ strobe(void)
         printf("Strobe set error\n");
         bcm2835_gpio_write(pinning[active_pinning].strobe, 1);
     }
-	_delay_us(STROBE_DELAY);
+    _delay_us(STROBE_DELAY);
     bcm2835_gpio_write(pinning[active_pinning].strobe, 0);
     while(bcm2835_gpio_lev(pinning[active_pinning].strobe)){
         printf("Strobe clear error\n");
@@ -380,7 +380,7 @@ flip_white_start(void)
 static void
 flip_white_stop(void)
 {
-	timer_wait(FLIP_DELAY_WHITE);
+    timer_wait(FLIP_DELAY_WHITE);
     bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
     while(bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
         printf("OE black clear error\n");
@@ -412,7 +412,7 @@ flip_black_start(void)
 static void
 flip_black_stop(void)
 {
-	timer_wait(FLIP_DELAY_BLACK);
+    timer_wait(FLIP_DELAY_BLACK);
     bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
     while(bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
         printf("OE black clear error\n");

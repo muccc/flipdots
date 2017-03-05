@@ -27,8 +27,8 @@
 #include <stdint.h>
 
 enum sreg {
-	ROW,
-	COL
+    ROW,
+    COL
 };
 
 typedef struct {
@@ -41,17 +41,17 @@ typedef struct {
     int clk_row;
 } flipdot_pinning;
 
-#define FLIP_DELAY_BLACK 3000			/* us */
-#define FLIP_DELAY_WHITE 3000			/* us */
+#define FLIP_DELAY_BLACK 3000       /* us */
+#define FLIP_DELAY_WHITE 3000       /* us */
 
-//#define FLIP_DELAY_BLACK (6500)			/* us */
-//#define FLIP_DELAY_WHITE (6500)			/* us */
+//#define FLIP_DELAY_BLACK (6500)   /* us */
+//#define FLIP_DELAY_WHITE (6500)   /* us */
 
 //#define FLIP_DELAY_BLACK 0
 //#define FLIP_DELAY_WHITE 0
 //#define CLK_DELAY 180
 
-#define STROBE_DELAY 1			/* us */
+#define STROBE_DELAY 1              /* us */
 
 #define MODULE_ROWS 16
 #define MODULE_COLS 20
