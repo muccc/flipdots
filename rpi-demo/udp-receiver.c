@@ -1,5 +1,6 @@
 #include "flipdot.h"
 #include "flipdot_net.h"
+#include "translate.h"
 #include "config.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -25,6 +26,8 @@ int main(void)
     flipdot_init();
     
     uint8_t data[CONFIG_BUS_COUNT][MODULE_BYTE_COUNT * CONFIG_BUS_LENGTH];
+    uint8_t data_trans[CONFIG_BUS_COUNT][MODULE_BYTE_COUNT * CONFIG_BUS_LENGTH];
+
     while (keepRunning) {
         int n = flipdot_net_recv_frame((uint8_t *)data, sizeof(data));
         if(n <= 0) {
@@ -44,10 +47,12 @@ int main(void)
 
             active_pinning = i;
             if(n >= sizeof(data[0])) {
-                flipdot_data(data[i], sizeof(data[0]));
+                translate(data[i], data_trans[i], sizeof(data[0]));
+                flipdot_data(data_trans[i], sizeof(data[0]));
                 n -=  sizeof(data[0]);
             } else {
-                flipdot_data(data[i], n);
+                translate(data[i], data_trans[i], n);
+                flipdot_data(data_trans[i], n);
                 // There is no more data to consume
                 break;
             }
