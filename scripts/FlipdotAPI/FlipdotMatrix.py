@@ -13,7 +13,7 @@ class FlipdotMatrix():
 
                  udpHostsAndPorts = config.panelAddressArray,
                  imageSize=(144, 120),
-                 transposed = True
+                 transposed = config.transposed
                  ):
         self.__sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.transposed = transposed
