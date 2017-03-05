@@ -155,7 +155,6 @@ class matrixMapping():
         ## transpose panels
         for i in range(11):
             panels[i] = zip(*panels[i])
-
         
         ## bring panels to right order:
         rightpanels = []
@@ -195,33 +194,34 @@ class matrixMapping():
 
     def doWand2DMapping(self, linearInput):
         ## spilt to several panel-matrixes
+#        print linearInput
         panels = []
         for i in range(9):
             panels.append([])
-            for y in range(120):
+            for x in range(16):
                 panels[i].append([])
         
         for y in range (120):
             for i in range(9):
-                for x in range(144):
+                for x in range(16):
                     if len(linearInput) > 0:
-                         panels[i][y].append(linearInput.pop(0))
+                         panels[i][x].append(linearInput.pop(0))
                     else:
-                         panels[i][y].append(0)
+                         panels[i][x].append(0)
 
-                panels[i][y].reverse()
+#                panels[i][x].reverse()
 
 
         ## transpose panels
-        for i in range(11):
+        for i in range(9):
             panels[i] = zip(*panels[i])
 
         linearOutput = []
             
-        for y in range(144):
+        for x in range(16):
             for i in range(9):
-                for x in range(120):
-                    linearOutput.append(rightpanels[i][y][x])
+                for y in range(120):
+                    linearOutput.append(panels[i][119-y][x])
 
         return linearOutput
 
