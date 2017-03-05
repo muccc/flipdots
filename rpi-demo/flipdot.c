@@ -23,10 +23,14 @@
 #include "config.h"
 
 #include <bcm2835.h>
+#include <time.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <inttypes.h>
+#include <stdio.h>
 
 //extern int usleep (__useconds_t __useconds);
 //#define _delay_us(x) usleep(x)
@@ -162,7 +166,40 @@ diff_to_1(uint8_t old, uint8_t new) {
 	return ~(~old & new);
 }
 
-#if 0
+#if 1
+
+static uint64_t timer;
+
+static uint64_t
+get_time(void)
+{
+    struct timespec time;
+    clock_gettime(CLOCK_MONOTONIC_RAW, &time);
+    uint64_t time_us = time.tv_sec * 1000000 + time.tv_nsec / 1000;
+    return time_us;
+}
+
+static void
+timer_start(void)
+{
+    timer = get_time();
+}
+
+static void
+timer_wait(uint32_t micros)
+{
+    if(micros == 0) {
+        return;
+    }
+
+    uint64_t elapsed = get_time() - timer;
+    if(micros > elapsed) {
+        _delay_us(micros - elapsed);
+    } else {
+        printf("Too slow: %" PRIu64 "/%" PRIu32 "\n", elapsed, micros);
+    }
+}
+
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
@@ -187,9 +224,6 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 
 		row_data_to_1 = to_1 + row * DISP_COLS/8;
 		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
-#ifdef FLIP_DELAY_BLACK
-		_delay_us(FLIP_DELAY_BLACK);
-#endif
 
 		flip_black_stop();
 		// Apply the shift register content for the white pixels
@@ -200,9 +234,6 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 		sreg_push_bit(COL, 0);
 		row_data_to_0 = to_0 + (row+1) * DISP_COLS/8;
 		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
-#ifdef FLIP_DELAY_WHITE
-		_delay_us(FLIP_DELAY_WHITE);
-#endif
 
 		flip_white_stop();
 		row++;
@@ -225,13 +256,11 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 		sreg_fill(ROW, row_data_to_0, DISP_COLS); /* Fill row to 0 shift register */
 		strobe();
 		flip_black_start();
-		_delay_us(FLIP_DELAY_BLACK);
 		flip_black_stop();
 
 		sreg_fill(ROW, row_data_to_1, DISP_COLS); /* Fill row to 1 shift register */
 		strobe();
 		flip_white_start();
-		_delay_us(FLIP_DELAY_WHITE);
 		flip_white_stop();
 	}
 }
@@ -241,12 +270,30 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 static void
 sreg_push_bit(enum sreg reg, uint8_t bit)
 {
+#ifdef CLK_DELAY
     volatile int i;
+#endif
     bcm2835_gpio_write(DATA(reg), bit);
+    while(bcm2835_gpio_lev(DATA(reg)) != bit){
+        printf("Data error\n");
+        bcm2835_gpio_write(DATA(reg), bit);
+    }
+#ifdef CLK_DELAY
     for(i=0; i<CLK_DELAY; i++);
+#endif
     bcm2835_gpio_write(CLK(reg), 1);
+    while(!bcm2835_gpio_lev(CLK(reg))){
+        printf("Clock set error\n");
+        bcm2835_gpio_write(CLK(reg), 1);
+    }
+#ifdef CLK_DELAY
     for(i=0; i<CLK_DELAY; i++);
+#endif
     bcm2835_gpio_write(CLK(reg), 0);
+    while(bcm2835_gpio_lev(CLK(reg))){
+        printf("Clock clear error\n");
+        bcm2835_gpio_write(CLK(reg), 0);
+    }
 }
 
 static void
@@ -276,6 +323,7 @@ sreg_fill_row(uint8_t *data, int count)
     /* This is necessary because the row
 	* register has 4 unmapped bits */
     int i;
+    int bit = 0;
 
     // Send 4 extra bits at the beginnig
     int c = 20;
@@ -284,14 +332,15 @@ sreg_fill_row(uint8_t *data, int count)
         if(c == 20) {
             // 20 bits have been pushed, send the 4
             // extra bits now.
-            sreg_push_bit(ROW, 0);
-            sreg_push_bit(ROW, 0);
-            sreg_push_bit(ROW, 0);
-            sreg_push_bit(ROW, 0);
+            sreg_push_bit(ROW, bit);
+            sreg_push_bit(ROW, bit);
+            sreg_push_bit(ROW, bit);
+            sreg_push_bit(ROW, bit);
             c = 0;
         }
+        bit = ISBITSET(data, (count-i-1)) ? 1 : 0;
         /* count-i-1 because the first bit needs to go last */
-        sreg_push_bit(ROW, ISBITSET(data, (count-i-1)));
+        sreg_push_bit(ROW, bit);
         c++;
     }	
 }
@@ -300,40 +349,68 @@ static void
 strobe(void)
 {
     bcm2835_gpio_write(pinning[active_pinning].strobe, 1);
+    while(!bcm2835_gpio_lev(pinning[active_pinning].strobe)){
+        bcm2835_gpio_write(pinning[active_pinning].strobe, 1);
+    }
 	_delay_us(STROBE_DELAY);
     bcm2835_gpio_write(pinning[active_pinning].strobe, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].strobe)){
+        bcm2835_gpio_write(pinning[active_pinning].strobe, 0);
+    }
 }
 
 static void
 flip_white_start(void)
 {
-    max7301_flush_history();
-    max7301_set_pin(pinning[active_pinning].oe_black, 0);
-    max7301_set_pin(pinning[active_pinning].oe_white, 1);
-    max7301_flush_history();
+    timer_start();
+    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    }
+    bcm2835_gpio_write(pinning[active_pinning].oe_white, 1);
+    while(!bcm2835_gpio_lev(pinning[active_pinning].oe_white)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_white, 1);
+    }
 }
 
 static void
 flip_white_stop(void)
 {
-    max7301_set_pin(pinning[active_pinning].oe_black, 0);
-    max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    max7301_flush_history();
+	timer_wait(FLIP_DELAY_WHITE);
+    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    }
+    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    }
 }
 
 static void
 flip_black_start(void)
 {
-    max7301_flush_history();
-    max7301_set_pin(pinning[active_pinning].oe_black, 1);
-    max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    max7301_flush_history();
+    timer_start();
+    bcm2835_gpio_write(pinning[active_pinning].oe_black, 1);
+    while(!bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_black, 1);
+    }
+    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    }
 }
 
 static void
 flip_black_stop(void)
 {
-    max7301_set_pin(pinning[active_pinning].oe_black, 0);
-    max7301_set_pin(pinning[active_pinning].oe_white, 0);
-    max7301_flush_history();
+	timer_wait(FLIP_DELAY_BLACK);
+    bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_black, 0);
+    }
+    bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white)){
+        bcm2835_gpio_write(pinning[active_pinning].oe_white, 0);
+    }
 }

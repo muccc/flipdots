@@ -1,4 +1,4 @@
-CFLAGS = -O3 -Wall -Werror -std=c99 -g
+CFLAGS = -O3 -Wall -Werror -std=gnu99 -g
 LIBS = -lbcm2835
 
 all: demo udp-receiver
