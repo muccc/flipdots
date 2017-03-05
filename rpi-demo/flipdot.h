@@ -43,14 +43,13 @@ typedef struct {
 
 #define FLIP_DELAY_BLACK 3000			/* us */
 #define FLIP_DELAY_WHITE 3000			/* us */
-#define CLK_DELAY 10
 
 //#define FLIP_DELAY_BLACK (6500)			/* us */
 //#define FLIP_DELAY_WHITE (6500)			/* us */
-//#define CLK_DELAY 180
 
 //#define FLIP_DELAY_BLACK 0
 //#define FLIP_DELAY_WHITE 0
+//#define CLK_DELAY 180
 
 #define STROBE_DELAY 1			/* us */
 
