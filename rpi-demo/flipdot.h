@@ -27,8 +27,8 @@
 #include <stdint.h>
 
 enum sreg {
-	ROW,
-	COL
+    ROW,
+    COL
 };
 
 typedef struct {
@@ -41,9 +41,17 @@ typedef struct {
     int clk_row;
 } flipdot_pinning;
 
-//#define FLIP_DELAY_BLACK 3000			/* us */
-//#define FLIP_DELAY_WHITE 1500			/* us */
-#define STROBE_DELAY 1			/* us */
+#define FLIP_DELAY_BLACK 3000       /* us */
+#define FLIP_DELAY_WHITE 3000       /* us */
+
+//#define FLIP_DELAY_BLACK (6500)   /* us */
+//#define FLIP_DELAY_WHITE (6500)   /* us */
+
+//#define FLIP_DELAY_BLACK 0
+//#define FLIP_DELAY_WHITE 0
+//#define CLK_DELAY 180
+
+#define STROBE_DELAY 1              /* us */
 
 #define MODULE_ROWS 16
 #define MODULE_COLS 20
@@ -60,7 +68,8 @@ typedef struct {
 #define DISP_BYTE_COUNT (DISP_PIXEL_COUNT/8)
 
 
-void flipdot_init(void);
+int flipdot_init(void);
 void flipdot_data(uint8_t *frames, uint16_t size);
-
+void flipdot_power_on(void);
+void flipdot_power_off(void);
 #endif /* FLIPDOT_H */

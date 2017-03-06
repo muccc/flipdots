@@ -28,7 +28,7 @@ struct flipdot_packet
 {
     uint8_t panel_number;
     uint8_t command;
-	uint8_t frame[16*20];
+    uint8_t frame[16*20];
 }__attribute__((packed));
 #endif
 
