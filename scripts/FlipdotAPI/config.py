@@ -1,5 +1,5 @@
 panelAddressArray = [
-        ("2001:7f0:3003:235e:ba27:ebff:fee3:ff77y", 2323)
+        ("2001:7f0:3003:235e:ba27:ebff:fee3:ff77", 2323)
         ]
 
 zeileAddressArray = [
