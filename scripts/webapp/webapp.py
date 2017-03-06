@@ -12,13 +12,7 @@ wandheight = 120
 
 app = Flask(__name__)
 matrix = FlipdotMatrix(
-    udpHostsAndPorts = [
-        ("fe80::ba27:ebff:feb9:db12",2323),
-        ("fe80::ba27:ebff:fe23:60d7", 2323),
-        ("fe80::ba27:ebff:fe71:dd32", 2323)
-        ],
     imageSize=(wandwidth, wandheight),
-    transposed = True
     )
 
 
