@@ -69,6 +69,7 @@ static void map_two_buffers(uint8_t (*fun)(uint8_t, uint8_t), uint8_t a[], uint8
 
 static void display_frame_differential(uint8_t *to_0, uint8_t *to_1);
 
+#define PIN_POWER_ENABLE    RPI_V2_GPIO_P1_11
 // XXX: Change to symbolic defines like RPI_V2_GPIO_P1_03
 flipdot_pinning pinning[CONFIG_BUS_COUNT] =
 {
@@ -96,6 +97,8 @@ flipdot_init(void)
         return 1;
 
     /* init pins */
+    bcm2835_gpio_fsel(PIN_POWER_ENABLE, BCM2835_GPIO_FSEL_OUTP);
+
     int i;
     for(i = 0; i < CONFIG_BUS_COUNT; i++) {
         active_pinning = i;
@@ -114,9 +117,12 @@ flipdot_init(void)
         /* Synchronize buffers and flipdot pixel state */
         memset(buffer_new[active_pinning], 0xFF, DISP_BYTE_COUNT);
         memset(buffer_old[active_pinning], 0x00, DISP_BYTE_COUNT);
+
+        flipdot_power_on();
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
         flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
+        flipdot_power_off();
     }
 
     for(i=0; i<256; i++) {
@@ -124,6 +130,26 @@ flipdot_init(void)
     }
     
     return 0;
+}
+
+void
+flipdot_power_on(void)
+{
+    bcm2835_gpio_write(PIN_POWER_ENABLE, 1);
+    while(!bcm2835_gpio_lev(PIN_POWER_ENABLE)){
+        printf("Power set error\n");
+        bcm2835_gpio_write(PIN_POWER_ENABLE, 1);
+    }
+}
+
+void
+flipdot_power_off(void)
+{
+    bcm2835_gpio_write(PIN_POWER_ENABLE, 0);
+    while(bcm2835_gpio_lev(PIN_POWER_ENABLE)){
+        printf("Power clear error\n");
+        bcm2835_gpio_write(PIN_POWER_ENABLE, 0);
+    }
 }
 
 void

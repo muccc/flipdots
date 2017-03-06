@@ -41,6 +41,7 @@ int main(void)
         
         printf("got %u bytes\n", n);
         int i;
+        flipdot_power_on();
         for(i = 0; i < CONFIG_BUS_COUNT; i++) {
             // This is supper uggly, but there is a global variable
             // which selects the active bus (A, B, C, D)...
@@ -57,6 +58,7 @@ int main(void)
                 break;
             }
         }
+        flipdot_power_off();
     }
     return 0;
 }
