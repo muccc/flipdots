@@ -30,11 +30,14 @@ class Clock:
         self.run_once = run_once
 
     def loop(self):
+        oldImage = FlipdotImage(self.generateClockImage())
         try:
             while True:
                 flipImage = FlipdotImage(self.generateClockImage())
-                if self.flipdot_out:
+                if (self.flipdot_out and
+                    flipImage.serializeImageArray() != oldImage.serializeImageArray()):
                     self.matrix.show(flipImage)
+                    oldImage = flipImage
                 if self.run_once:
                     break
                 sleep(self.update_interval)
