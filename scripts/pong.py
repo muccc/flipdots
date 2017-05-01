@@ -2,7 +2,7 @@
 from FlipdotAPI.FlipdotMatrix import FlipdotMatrix, FlipdotImage
 from random import randint
 from queue import Queue
-from time import sleep
+from time import time, sleep
 import threading
 import argparse
 import socket
@@ -204,6 +204,7 @@ class GameHandler:
     def loop(self):
         playing = False
         while not self.stop:
+            t = time()
             new_game = self.step()
             if new_game:
                 playing = False
@@ -229,7 +230,9 @@ class GameHandler:
                 self.flipmatrix.show(flipImage)
             if self.console_out:
                 self.printImage(image)
-            sleep(1./self.speed)
+            wait = (1./self.speed) - (time() - t)
+            if wait > 0:
+                sleep(wait)
 
     def transpose(self, image):
         new_image = [[0 for x in range(self.size[0])] for y in range(self.size[1])]
