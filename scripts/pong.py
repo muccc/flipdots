@@ -217,8 +217,10 @@ class GameHandler:
                 pass
             if self.flipdot_out:
                 flipImage = FlipdotImage(self.transpose(image))
-                flipImage.blitTextAtPosition("%d - %d" % (self.players[0].score, self.players[1].score), xPos=self.get_center()[0]-round(self.size[0]/18), yPos = 2*round(self.size[1]/12))
-                flipImage.blitTextAtPosition("%d - %d" % (self.players[0].total_score, self.players[1].total_score), xPos=self.get_center()[0]-round(self.size[0]/18), yPos = (round(self.size[1]/12)))
+                score_string = "%d - %d" % (self.players[0].score, self.players[1].score)
+                flipImage.blitTextAtPosition(score_string, xPos=self.get_center()[0]-2*(len(score_string)-1), yPos = 2*round(self.size[1]/12))
+                total_score_string = "%d - %d" % (self.players[0].total_score, self.players[1].total_score)
+                flipImage.blitTextAtPosition(total_score_string, xPos=self.get_center()[0]-2*(len(total_score_string)-1), yPos = (round(self.size[1]/12)))
                 if not playing:
                     if not self.players[0].active:
                         flipImage.blitTextAtPosition("Press Left", xPos=self.players[0].upper_right()[0] + 2, yPos = self.size[1] - self.players[0].upper_right()[1])
