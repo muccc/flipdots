@@ -15,4 +15,4 @@ Gemfile.lock
 .project
 .pydevproject
 *.py[cod]
-
+scripts/scores

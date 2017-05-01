@@ -1,6 +1,8 @@
 import math
 
 def normVector(v):
+    if len(v) == v.count(0):
+        return v
     length = math.sqrt(sum([i**2 for i in v]))
     new_v = []
     for i in range(len(v)):
