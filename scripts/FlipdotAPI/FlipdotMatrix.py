@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import socket
+import numpy as np
 try:
     from FlipdotAPI import config
     from FlipdotAPI.font import font8px
@@ -112,7 +113,7 @@ class FlipdotImage(object):
     def __init__(self, pixel2DArray):
         self.width = len(pixel2DArray[0])
         self.height = len(pixel2DArray)
-        self.rowArrayOfLineArraysOfPixels =  pixel2DArray
+        self.rowArrayOfLineArraysOfPixels = np.array(pixel2DArray)
 
     def blitImageAtPosition(self, flipdotImage, xPos=0, yPos=0):
         for lineNr in range(self.height):
@@ -164,21 +165,9 @@ class FlipdotImage(object):
 
     def serializeImageArray(self, transposed = False):
         if transposed:
-            return self.__serializeTransposedImageArray()
+            return self.rowArrayOfLineArraysOfPixels.T.ravel()
 
-        imageArray = []
-        for y in range(self.height):
-            for x in range(self.width):
-                imageArray.append(self.rowArrayOfLineArraysOfPixels[y][x])
-        return imageArray
-
-    def __serializeTransposedImageArray(self):
-        imageArray = []
-        for x in range(self.width):
-            for y in reversed(range(self.height)):
-                imageArray.append(self.rowArrayOfLineArraysOfPixels[y][x])
-        return imageArray
-
+        return self.rowArrayOfLineArraysOfPixels.ravel()
 
     def getLine(self, line):
         return self.rowArrayOfLineArraysOfPixels[line]
