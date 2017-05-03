@@ -54,12 +54,9 @@ class FlipdotMatrix():
         self.__updateFlipdotMatrixes()
 
     def __updateFlipdotMatrixes(self):
+        cuts = np.hsplit(self.flipdotImage.rowArrayOfLineArraysOfPixels, self.numberOfMatrixes)
         for i in range(self.numberOfMatrixes):
-            MatrixSize = self.MatrixSize
-            xOffset = i*MatrixSize[0]
-            yOffset = 0
-            flipdotImage = FlipdotImage.newPartOfAnotherFlipdotImage(self.flipdotImage, newSize=MatrixSize, offset=(xOffset, yOffset))
-            serializedImageArray = flipdotImage.serializeImageArray(self.transposed)
+            serializedImageArray = cuts[i].ravel() if not self.transposed else cuts[i].T.ravel()
             udpHostAndPort = self.udpHostsAndPorts[i]
             self.__showSerializedArrayOfPixels(serializedImageArray, udpHostAndPort)
 
