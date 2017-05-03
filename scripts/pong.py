@@ -228,7 +228,7 @@ class GameHandler:
                         flipImage.blitTextAtPosition("Press Left", xPos=self.players[0].upper_right()[0] + 2, yPos = self.size[1] - self.players[0].upper_right()[1])
                     if not self.players[1].active:
                         flipImage.blitTextAtPosition("Press Left", xPos=self.players[1].lower_left()[0] - 46, yPos = self.size[1] - self.players[1].upper_right()[1])
-                self.flipmatrix.show(flipImage)
+                self.flipmatrix.showImage(flipImage)
             if self.console_out:
                 self.printImage(image)
             wait = (1./self.speed) - (time() - t)

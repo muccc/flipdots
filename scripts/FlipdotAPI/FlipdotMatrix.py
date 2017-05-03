@@ -46,6 +46,10 @@ class FlipdotMatrix():
         self.flipdotImage.blitImageAtPosition(image)
         self.__updateFlipdotMatrixes()
 
+    def showImage(self, image):
+        self.flipdotImage = image
+        self.__updateFlipdotMatrixes()
+
     def showBlit (self, image, xPos=0, yPos=0):
         """
         send FlipdotImage to display, keeps old pixels around
