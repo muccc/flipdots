@@ -183,11 +183,12 @@ class InputHandler(threading.Thread):
             self.playerInputHandlers[player][1].put(command)
 
 class GameHandler:
-    def __init__(self, size, speed, udpHostsAndPorts = [], console_out = False, invert = False, panel_defaults = False, ball_speed = 6, player_speed = 3):
+    def __init__(self, size, speed, udpHostsAndPorts = [], console_out = False, invert = False, panel_defaults = False, ball_speed = 6, player_speed = 3, scores_file = "scores"):
         self.size = size
         self.speed = speed
         bar_size = (round(self.size[0]/18),round(self.size[1]/5))
         ball_size = (round(self.size[0]/18),round(self.size[0]/18))
+        self.scores_file = scores_file
         total_scores = self.loadScores()
         self.players = (
             Player(bar_size, (round(self.size[0]/18),round(self.size[1]/2)), speed = player_speed, total_score = total_scores[0]),
@@ -277,12 +278,12 @@ class GameHandler:
             return new_game
 
     def saveScores(self):
-        with open("scores", "w") as f:
+        with open(self.scores_file, "w") as f:
             f.write("%d %d" % (self.players[0].total_score, self.players[1].total_score))
 
     def loadScores(self):
         try:
-            with open("scores", "r") as f:
+            with open(self.scores_file, "r") as f:
                 lines = f.readlines()
             scores = [int(x) for x in lines[0].split(" ")]
         except:
@@ -302,6 +303,7 @@ if __name__ == "__main__":
     parser.add_argument('--speed', type=int, default=15, help='Speed of the game')
     parser.add_argument('--ball-speed', type=int, default=6, help='Speed of the game')
     parser.add_argument('--player-speed', type=int, default=3, help='Speed of the game')
+    parser.add_argument('--scores-file', default='scores', help='File to save/load scores to/from')
     parser.add_argument('flipdotpanels', nargs='*', help='List of ip46:port strings for the flipdotpanels')
     args = parser.parse_args()
 
@@ -311,5 +313,5 @@ if __name__ == "__main__":
         ipPort = (ipPort[0], int(ipPort[1]))
         hostsAndPorts.append(ipPort)
 
-    game = GameHandler((args.sizex, args.sizey), args.speed, hostsAndPorts, args.console_out, args.invert, args.panel_defaults, args.ball_speed, args.player_speed)
+    game = GameHandler((args.sizex, args.sizey), args.speed, hostsAndPorts, args.console_out, args.invert, args.panel_defaults, args.ball_speed, args.player_speed, args.scores_file)
     game.loop()
