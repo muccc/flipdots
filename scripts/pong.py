@@ -235,6 +235,8 @@ class GameHandler:
             wait = (1./self.speed) - (time() - t)
             if wait > 0:
                 sleep(wait)
+            else:
+                print("Too slow!")
 
     def printImage(self, image):
         for y in range(len(image[0])-1, -1, -1):
