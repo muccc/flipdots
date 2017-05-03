@@ -5,6 +5,7 @@ from queue import Queue
 from time import time, sleep
 import threading
 import argparse
+import numpy as np
 import socket
 import fliputils
 
@@ -217,7 +218,7 @@ class GameHandler:
             if self.invert:
                 pass
             if self.flipdot_out:
-                flipImage = FlipdotImage(self.transpose(image))
+                flipImage = FlipdotImage(image.T)
                 score_string = "%d - %d" % (self.players[0].score, self.players[1].score)
                 flipImage.blitTextAtPosition(score_string, xPos=self.get_center()[0]-2*(len(score_string)-1), yPos = 2*round(self.size[1]/12))
                 total_score_string = "%d - %d" % (self.players[0].total_score, self.players[1].total_score)
@@ -234,15 +235,6 @@ class GameHandler:
             if wait > 0:
                 sleep(wait)
 
-    def transpose(self, image):
-        new_image = [[0 for x in range(self.size[0])] for y in range(self.size[1])]
-
-        for x in range(self.size[0]):
-            for y in range(self.size[1]):
-                new_image[y][x] = image[x][self.size[1] - y - 1]
-
-        return new_image
-
     def printImage(self, image):
         for y in range(len(image[0])-1, -1, -1):
             line = ""
@@ -254,7 +246,7 @@ class GameHandler:
         return (round(self.size[0]/2), round(self.size[1]/2))
 
     def generatePongImage(self):
-        image = [[None for y in range(self.size[1])] for x in range(self.size[0])]
+        image = np.zeros(self.size,dtype=np.byte)
 
         for player in self.players:
             player.draw(image)
