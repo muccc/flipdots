@@ -154,6 +154,7 @@ class InputHandler(threading.Thread):
         self.socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.address = ("", 5555)
         self.socket.bind(self.address)
+        self.lastCommand = time()
         queues = (Queue(), Queue())
         self.playerInputHandlers = (
             (PlayerInputHandler(players[0],queues[0]), queues[0]),
@@ -181,6 +182,8 @@ class InputHandler(threading.Thread):
                     self.playerIds[ri] = player_id
                     player = ri
             self.playerInputHandlers[player][1].put(command)
+            if command != "NONE":
+                self.lastCommand = time()
 
 class GameHandler:
     def __init__(self, size, speed, udpHostsAndPorts = [], console_out = False, invert = False, panel_defaults = False, ball_speed = 6, player_speed = 3):
@@ -217,7 +220,7 @@ class GameHandler:
                     self.ball.change_direction((1,0))
             if self.invert:
                 pass
-            if self.flipdot_out:
+            if self.flipdot_out and (playing or (time() - self.inputHandler.lastCommand < 1)):
                 flipImage = FlipdotImage(np.flipud(image.T))
                 score_string = "%d - %d" % (self.players[0].score, self.players[1].score)
                 flipImage.blitTextAtPosition(score_string, xPos=self.get_center()[0]-2*(len(score_string)-1), yPos = 2*round(self.size[1]/12))
