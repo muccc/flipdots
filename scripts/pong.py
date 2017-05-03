@@ -218,7 +218,7 @@ class GameHandler:
             if self.invert:
                 pass
             if self.flipdot_out:
-                flipImage = FlipdotImage(image.T)
+                flipImage = FlipdotImage(np.flipud(image.T))
                 score_string = "%d - %d" % (self.players[0].score, self.players[1].score)
                 flipImage.blitTextAtPosition(score_string, xPos=self.get_center()[0]-2*(len(score_string)-1), yPos = 2*round(self.size[1]/12))
                 total_score_string = "%d - %d" % (self.players[0].total_score, self.players[1].total_score)
