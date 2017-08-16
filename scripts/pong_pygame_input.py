@@ -1,11 +1,15 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from time import sleep
 from pygame.locals import *
 import pygame
 import socket
 
+UDP_HOST="::1"
+UDP_PORT=5555
+
 def sendCommand(s, player_id, command):
-    s.sendto("%s %s" % (player_id, command.upper()), ("2001:7f0:3003:235f:ba9a:3c03:185d:69b5",5555))
+    s.sendto(bytearray([ord(x) for x in player_id] + [ord(" ")] + [ord(x) for x in command.upper()]),
+            (UDP_HOST,UDP_PORT))
 
 def pygameInputHandler():
     pygame.init()
@@ -18,24 +22,24 @@ def pygameInputHandler():
     while True:
         c1 = "none"
         c2 = "none"
-        for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_LEFT:
-                    c1 = "left"
-                elif event.key == K_RIGHT:
-                    c1 = "right"
-                elif event.key == K_UP:
-                    c1 = "up"
-                elif event.key == K_DOWN:
-                    c1 = "down"
-                elif event.key == K_w:
-                    c2 = "up"
-                elif event.key == K_a:
-                    c2 = "left"
-                elif event.key == K_s:
-                    c2 = "down"
-                elif event.key == K_d:
-                    c2 = "right"
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            c1 = "left"
+        elif keys[K_RIGHT]:
+            c1 = "right"
+        elif keys[K_UP]:
+            c1 = "up"
+        elif keys[K_DOWN]:
+            c1 = "down"
+        if keys[K_w]:
+            c2 = "up"
+        elif keys[K_a]:
+            c2 = "left"
+        elif keys[K_s]:
+            c2 = "down"
+        elif keys[K_d]:
+            c2 = "right"
+        pygame.event.pump()
         sendCommand(s, "derp", c1)
         sendCommand(s, "durp", c2)
         sleep(.01)
