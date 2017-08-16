@@ -36,7 +36,7 @@ class Clock:
                 t = time()
                 flipImage = FlipdotImage(self.generateClockImage())
                 if (self.flipdot_out and
-                    flipImage.serializeImageArray() != oldImage.serializeImageArray()):
+                    flipImage != oldImage):
                     self.matrix.show(flipImage)
                     oldImage = flipImage
                 if self.run_once:
