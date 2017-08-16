@@ -78,7 +78,7 @@ def addText(flipImage, sizex, sizey):
 
     pass
 
-def doSomething(sizex, sizey, udpHostsAndPorts = [], console_out = True, api_defaults = False, update_interval = 0):
+def doSomething(sizex, sizey, udpHostsAndPorts = [], console_out = True, api_defaults = False, update_interval = 0, clean_all = False):
     if len(udpHostsAndPorts) != 0:
         flipdot_matrix = FlipdotMatrix(udpHostsAndPorts, (sizex, sizey))
         flipdot_out = True
@@ -88,6 +88,10 @@ def doSomething(sizex, sizey, udpHostsAndPorts = [], console_out = True, api_def
     else:
         flipdot_matrix = None
         flipdot_out = False
+
+    if clean_all == True:
+        clean_flipdot(sizex, sizey, flipdot_matrix, flipdot_out, console_out)
+        return
 
     pixel_matrix = generateEmptyMatrix(sizex, sizey)
 
@@ -100,11 +104,16 @@ def doSomething(sizex, sizey, udpHostsAndPorts = [], console_out = True, api_def
 
     show(pixel_matrix, flipdot_matrix, flipdot_out, console_out, sizex, sizey)
 
+def clean_flipdot(sizex, sizey, flipdot_matrix, flipdot_out, console_out):
+    pixel_matrix = generateEmptyMatrix(sizex, sizey)
+    show(pixel_matrix, flipdot_matrix, flipdot_out, console_out, sizex, sizey)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Introduction to programming with Python')
     parser.add_argument('--sizex', type=int, default=144, help='Size on the x axis')
     parser.add_argument('--sizey', type=int, default=120, help='Size on the y axis')
     parser.add_argument('--console-out', '-c', action='store_true', help='Print matrix to console')
+    parser.add_argument('--clean', action='store_true', help='Clean the Flipdot')
     parser.add_argument('--use-api-defaults', '-d', action='store_true', help='Use the default Flipdot host/port data from FlipdotAPI')
     parser.add_argument('--update-interval', '-i', type=float, default=1, help='Interal in seconds between updating the Flipdot panels')
     parser.add_argument('flipdotpanels', nargs='*', help='List of ip46:port strings for the Flipdot panels')
@@ -119,4 +128,4 @@ if __name__ == '__main__':
     #main_loop(args.sizex, args.sizey, udpHostsAndPorts = hostsAndPorts, console_out = args.console_out,
     #        api_defaults = args.use_api_defaults, update_interval = args.update_interval)
     doSomething(args.sizex, args.sizey, udpHostsAndPorts = hostsAndPorts, console_out = args.console_out,
-            api_defaults = args.use_api_defaults, update_interval = args.update_interval)
+            api_defaults = args.use_api_defaults, update_interval = args.update_interval, clean_all = args.clean)
