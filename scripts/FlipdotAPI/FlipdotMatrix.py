@@ -222,7 +222,6 @@ class FlipdotImage(object):
         return lineArrayOfPixels
 
     def __eq__(self, other):
-        print("derp")
         return (self.rowArrayOfLineArraysOfPixels == other.rowArrayOfLineArraysOfPixels).all()
 
 #main
