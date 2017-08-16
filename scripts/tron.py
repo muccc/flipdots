@@ -1,17 +1,17 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # Copyright (c) 2013, Florian 'dividuum' Wesch
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
 #    list of conditions and the following disclaimer.
-# 
+#
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -38,16 +38,16 @@ app = Flask(__name__)
 STARTED = time.time()
 
 # Publicly visible IP
-MYIP = "144.76.70.112"
+MYIP = "127.0.0.1"
 
 # HTTP Port
 PORT = 8080
 
 # seconds per frame
-TICK_TIME = 0.7 
+TICK_TIME = 0.7
 
 # round time. put this game in an outside while loop and just restart it
-ROUND_TIME = 600 
+ROUND_TIME = 600
 
 # reserved pixels at the top
 TOP = 20
@@ -56,13 +56,8 @@ WIDTH = 144
 HEIGHT = 120
 
 matrix = FlipdotMatrix(
-     udpHostsAndPorts = [
-         ("2001:67c:20a1:1063:ba27:ebff:fe86:8697", 5555),
-         ("2001:67c:20a1:1063:ba27:ebff:fe23:60d7", 5555),
-         ("2001:67c:20a1:1063:ba27:ebff:fe71:dd32", 5555),
-     ],
      imageSize = (WIDTH, HEIGHT),
-     transposed = True,
+     transposed = False,
 )
 
 class Player(object):
@@ -135,18 +130,18 @@ class Game(object):
         self.matrix.show(self.image)
 
     def start(self):
-        print "resetting game"
+        print("resetting game")
         self.image = FlipdotImage.newWhiteFlipdotImage(
             self.width, self.height)
         self.reset_white()
-        for x in xrange(self.width):
-            for y in xrange(TOP):
+        for x in range(self.width):
+            for y in range(TOP):
                 self.set_pixel(x, y)
             self.set_pixel(x, self.height-1)
-        for y in xrange(self.height):
+        for y in range(self.height):
             self.set_pixel(0,  y)
             self.set_pixel(self.width - 1, y)
-        for player in self.players.itervalues():
+        for player in self.players.values():
             player.reset()
             player.draw()
         self.image.blitTextAtPosition("join this game by dividuum", xPos=5, yPos=2)
@@ -154,8 +149,8 @@ class Game(object):
         self.flush()
 
     def step(self):
-        print "step"
-        for player in self.players.itervalues():
+        print("step")
+        for player in self.players.values():
             player.step()
         remaining = ROUND_TIME - (time.time() - STARTED)
         self.image.blitTextAtPosition("%03d" % remaining, xPos=120, yPos=9)
@@ -241,7 +236,7 @@ def web():
     http_server.serve_forever()
 
 if __name__ == "__main__":
-    print "Start"
+    print("Start")
     a = gevent.spawn(web)
     b = gevent.spawn(game)
     while time.time() - STARTED < ROUND_TIME:
