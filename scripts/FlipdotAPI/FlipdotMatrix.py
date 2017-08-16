@@ -221,6 +221,10 @@ class FlipdotImage(object):
             lineArrayOfPixels.append(color)
         return lineArrayOfPixels
 
+    def __eq__(self, other):
+        print("derp")
+        return (self.rowArrayOfLineArraysOfPixels == other.rowArrayOfLineArraysOfPixels).all()
+
 #main
 if (__name__=="__main__"):
     matrix = FlipdotMatrix()
