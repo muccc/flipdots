@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from FlipdotAPI.FlipdotMatrix import FlipdotMatrix, FlipdotImage
-from time import sleep
+from time import sleep, time
 import argparse
 import datetime
 import math
@@ -33,6 +33,7 @@ class Clock:
         oldImage = FlipdotImage(self.generateClockImage())
         try:
             while True:
+                t = time()
                 flipImage = FlipdotImage(self.generateClockImage())
                 if (self.flipdot_out and
                     flipImage.serializeImageArray() != oldImage.serializeImageArray()):
@@ -40,7 +41,11 @@ class Clock:
                     oldImage = flipImage
                 if self.run_once:
                     break
-                sleep(self.update_interval)
+                sleep_time = self.update_interval - (time() - t)
+                if sleep_time > 0:
+                    sleep(sleep_time)
+                else:
+                    print("Too slow")
         except KeyboardInterrupt:
             return
 
