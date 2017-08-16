@@ -3,9 +3,10 @@ with import <nixpkgs> {}; {
     name = "flipdots-env";
     buildInputs = [
       python3
-      python3Packages.numpy
-      python3Packages.gevent
       python3Packages.flask
+      python3Packages.gevent
+      python3Packages.numpy
+      python3Packages.pygame
     ];
   };
 }
