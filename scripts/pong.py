@@ -149,9 +149,12 @@ class PlayerInputHandler(threading.Thread):
                 self.player.stop()
 
 class InputHandler(threading.Thread):
-    def __init__(self, players):
+    def __init__(self, players, ipv4 = False):
         threading.Thread.__init__(self, daemon = True)
-        self.socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        if ipv4:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        else:
+            self.socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.address = ("", 5555)
         self.socket.bind(self.address)
         queues = (Queue(), Queue())
@@ -194,7 +197,7 @@ class GameHandler:
             Player(bar_size, (round(self.size[0]/18),round(self.size[1]/2)), speed = player_speed, total_score = total_scores[0]),
             Player(bar_size, (self.size[0] - round(self.size[0]/18),round(self.size[1]/2)), speed = player_speed, total_score = total_scores[1])
         )
-        self.inputHandler = InputHandler(self.players)
+        self.inputHandler = InputHandler(self.players, args.ipv4)
         self.ball = Ball(ball_size, self.get_center(), speed = ball_speed)
         self.stop = False
 
@@ -306,6 +309,7 @@ if __name__ == "__main__":
     parser.add_argument('--ball-speed', type=int, default=6, help='Speed of the game')
     parser.add_argument('--player-speed', type=int, default=3, help='Speed of the game')
     parser.add_argument('--scores-file', default='scores', help='File to save/load scores to/from')
+    parser.add_argument('--ipv4', '-ipv4', action='store_true', help='Run input socket on IPv4')
     parser.add_argument('flipdotpanels', nargs='*', help='List of ip46:port strings for the flipdotpanels')
     args = parser.parse_args()
 
