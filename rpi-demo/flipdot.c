@@ -201,7 +201,6 @@ diff_to_1(uint8_t old, uint8_t new) {
     return ~(~old & new);
 }
 
-#if 1
 
 static uint64_t timer;
 
@@ -235,6 +234,8 @@ timer_wait(uint32_t micros)
     }
 }
 
+#if 1
+// Load new row data while flipping
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
@@ -275,6 +276,7 @@ display_frame_differential(uint8_t *to_0, uint8_t *to_1)
     }
 }
 #else
+// Load new row data between flipping (slower)
 static void
 display_frame_differential(uint8_t *to_0, uint8_t *to_1)
 {
