@@ -13,4 +13,6 @@
 #define XL  (16 * 9)
 #define YL  (20 * 6)
 
+#define INVERT  0
+
 #endif
