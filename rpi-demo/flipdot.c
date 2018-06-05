@@ -50,15 +50,15 @@
 #define SETBIT(x,i) x[i>>3]|=(1<<(i&7));
 
 #define DATA(reg)                                \
-    ((reg == ROW) ? pinning[active_pinning].data_row : pinning[active_pinning].data_col)
+    ((reg == ROW) ? pinning.data_row : pinning.data_col)
 #define CLK(reg)                                \
-    ((reg == ROW) ? pinning[active_pinning].clk_row : pinning[active_pinning].clk_col)
+    ((reg == ROW) ? pinning.clk_row : pinning.clk_col)
 
-static uint8_t buffer_a[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
-static uint8_t buffer_b[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
-static uint8_t buffer_to_0[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
-static uint8_t buffer_to_1[CONFIG_BUS_COUNT][DISP_BYTE_COUNT];
-static uint8_t *buffer_new[CONFIG_BUS_COUNT], *buffer_old[CONFIG_BUS_COUNT];
+static uint8_t buffer_a[DISP_BYTE_COUNT];
+static uint8_t buffer_b[DISP_BYTE_COUNT];
+static uint8_t buffer_to_0[DISP_BYTE_COUNT];
+static uint8_t buffer_to_1[DISP_BYTE_COUNT];
+static uint8_t *buffer_new, *buffer_old;
 
 static void sreg_push_bit(enum sreg reg, uint8_t bit);
 static void sreg_fill(enum sreg reg, uint8_t *data, int count);
@@ -80,11 +80,9 @@ static void display_frame_differential(uint8_t *to_0, uint8_t *to_1);
 
 #define PIN_POWER_ENABLE    RPI_V2_GPIO_P1_11
 // XXX: Change to symbolic defines like RPI_V2_GPIO_P1_03
-flipdot_pinning pinning[CONFIG_BUS_COUNT] =
+flipdot_pinning pinning =
 {
-    {.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_05, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_13, .oe_black = RPI_V2_GPIO_P1_18, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
-    //{.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_07, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_15, .oe_black = RPI_V2_GPIO_P1_19, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
-    //{.data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_11, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_16, .oe_black = RPI_V2_GPIO_P1_21, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23},
+    .data_col = RPI_V2_GPIO_P1_03, .data_row = RPI_V2_GPIO_P1_05, .strobe = RPI_V2_GPIO_P1_12, .oe_white = RPI_V2_GPIO_P1_13, .oe_black = RPI_V2_GPIO_P1_18, .clk_col = RPI_V2_GPIO_P1_22, .clk_row = RPI_V2_GPIO_P1_23
 };
 
 static uint8_t flipper[256];
@@ -96,7 +94,6 @@ static uint8_t reverse(uint8_t b)
     b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
     return b;
 }
-int active_pinning = 0;
 
 int
 flipdot_init(void)
@@ -108,32 +105,29 @@ flipdot_init(void)
     /* init pins */
     bcm2835_gpio_fsel(PIN_POWER_ENABLE, BCM2835_GPIO_FSEL_OUTP);
 
+    bcm2835_gpio_fsel(pinning.data_col, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.data_row, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.strobe, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.oe_white, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.oe_black, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.clk_col, BCM2835_GPIO_FSEL_OUTP);
+    bcm2835_gpio_fsel(pinning.clk_row, BCM2835_GPIO_FSEL_OUTP);
+
+    /* Init buffer pointers */
+    buffer_new = buffer_a;
+    buffer_old = buffer_b;
+
+    /* Synchronize buffers and flipdot pixel state */
+    memset(buffer_new, 0xFF, DISP_BYTE_COUNT);
+    memset(buffer_old, 0x00, DISP_BYTE_COUNT);
+
+    flipdot_power_on();
+    flipdot_data(buffer_old, DISP_BYTE_COUNT);
+    flipdot_data(buffer_old, DISP_BYTE_COUNT);
+    flipdot_data(buffer_old, DISP_BYTE_COUNT);
+    flipdot_power_off();
+
     int i;
-    for(i = 0; i < CONFIG_BUS_COUNT; i++) {
-        active_pinning = i;
-        bcm2835_gpio_fsel(pinning[i].data_col, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].data_row, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].strobe, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].oe_white, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].oe_black, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].clk_col, BCM2835_GPIO_FSEL_OUTP);
-        bcm2835_gpio_fsel(pinning[i].clk_row, BCM2835_GPIO_FSEL_OUTP);
-
-        /* Init buffer pointers */
-        buffer_new[active_pinning] = buffer_a[active_pinning];
-        buffer_old[active_pinning] = buffer_b[active_pinning];
-
-        /* Synchronize buffers and flipdot pixel state */
-        memset(buffer_new[active_pinning], 0xFF, DISP_BYTE_COUNT);
-        memset(buffer_old[active_pinning], 0x00, DISP_BYTE_COUNT);
-
-        flipdot_power_on();
-        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
-        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
-        flipdot_data(buffer_old[active_pinning], DISP_BYTE_COUNT);
-        flipdot_power_off();
-    }
-
     for(i=0; i<256; i++) {
         flipper[i] = reverse(i);
     }
@@ -166,22 +160,22 @@ flipdot_data(uint8_t *frame, uint16_t size)
 {
     uint8_t *tmp;
 
-    memcpy(buffer_old[active_pinning], frame, size); /* Copy frame into buffer with old data */
+    memcpy(buffer_old, frame, size); /* Copy frame into buffer with old data */
     
     int i;
     for(i = 0; i < size; i++) {
-        uint8_t c = buffer_old[active_pinning][i];
-        buffer_old[active_pinning][i] = flipper[c];
+        uint8_t c = buffer_old[i];
+        buffer_old[i] = flipper[c];
     }
 
-    tmp = buffer_old[active_pinning];                 /* swap pointers buffer_new[active_pinning] and buffer_old[active_pinning] */
-    buffer_old[active_pinning] = buffer_new[active_pinning];
-    buffer_new[active_pinning] = tmp;
+    tmp = buffer_old;                 /* swap pointers buffer_new and buffer_old */
+    buffer_old = buffer_new;
+    buffer_new = tmp;
     
-    map_two_buffers(diff_to_0, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_0[active_pinning], DISP_BYTE_COUNT);
-    map_two_buffers(diff_to_1, buffer_old[active_pinning], buffer_new[active_pinning], buffer_to_1[active_pinning], DISP_BYTE_COUNT);
+    map_two_buffers(diff_to_0, buffer_old, buffer_new, buffer_to_0, DISP_BYTE_COUNT);
+    map_two_buffers(diff_to_1, buffer_old, buffer_new, buffer_to_1, DISP_BYTE_COUNT);
 
-    display_frame_differential(buffer_to_0[active_pinning], buffer_to_1[active_pinning]);
+    display_frame_differential(buffer_to_0, buffer_to_1);
 }
 
 static void
@@ -392,16 +386,16 @@ sreg_fill_row(uint8_t *data, int count)
 static void
 strobe(void)
 {
-    bcm2835_gpio_write(pinning[active_pinning].strobe, OH);
-    while(bcm2835_gpio_lev(pinning[active_pinning].strobe) == OL){
+    bcm2835_gpio_write(pinning.strobe, OH);
+    while(bcm2835_gpio_lev(pinning.strobe) == OL){
         printf("Strobe set error\n");
-        bcm2835_gpio_write(pinning[active_pinning].strobe, OH);
+        bcm2835_gpio_write(pinning.strobe, OH);
     }
     _delay_us(STROBE_DELAY);
-    bcm2835_gpio_write(pinning[active_pinning].strobe, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].strobe) == OH){
+    bcm2835_gpio_write(pinning.strobe, OL);
+    while(bcm2835_gpio_lev(pinning.strobe) == OH){
         printf("Strobe clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].strobe, OL);
+        bcm2835_gpio_write(pinning.strobe, OL);
     }
 }
 
@@ -409,15 +403,15 @@ static void
 flip_white_start(void)
 {
     timer_start();
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black) == OH){
+    bcm2835_gpio_write(pinning.oe_black, OL);
+    while(bcm2835_gpio_lev(pinning.oe_black) == OH){
         printf("OE black clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
+        bcm2835_gpio_write(pinning.oe_black, OL);
     }
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, OH);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white) == OL){
+    bcm2835_gpio_write(pinning.oe_white, OH);
+    while(bcm2835_gpio_lev(pinning.oe_white) == OL){
         printf("OE white set error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_white, OH);
+        bcm2835_gpio_write(pinning.oe_white, OH);
     }
 }
 
@@ -425,15 +419,15 @@ static void
 flip_white_stop(void)
 {
     timer_wait(FLIP_DELAY_WHITE);
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black) == OH){
+    bcm2835_gpio_write(pinning.oe_black, OL);
+    while(bcm2835_gpio_lev(pinning.oe_black) == OH){
         printf("OE black clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
+        bcm2835_gpio_write(pinning.oe_black, OL);
     }
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white) == OH){
+    bcm2835_gpio_write(pinning.oe_white, OL);
+    while(bcm2835_gpio_lev(pinning.oe_white) == OH){
         printf("OE white clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
+        bcm2835_gpio_write(pinning.oe_white, OL);
     }
 }
 
@@ -441,15 +435,15 @@ static void
 flip_black_start(void)
 {
     timer_start();
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, OH);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black) == OL){
+    bcm2835_gpio_write(pinning.oe_black, OH);
+    while(bcm2835_gpio_lev(pinning.oe_black) == OL){
         printf("OE black set error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_black, OH);
+        bcm2835_gpio_write(pinning.oe_black, OH);
     }
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white) == OH){
+    bcm2835_gpio_write(pinning.oe_white, OL);
+    while(bcm2835_gpio_lev(pinning.oe_white) == OH){
         printf("OE white clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
+        bcm2835_gpio_write(pinning.oe_white, OL);
     }
 }
 
@@ -457,14 +451,14 @@ static void
 flip_black_stop(void)
 {
     timer_wait(FLIP_DELAY_BLACK);
-    bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_black) == OH){
+    bcm2835_gpio_write(pinning.oe_black, OL);
+    while(bcm2835_gpio_lev(pinning.oe_black) == OH){
         printf("OE black clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_black, OL);
+        bcm2835_gpio_write(pinning.oe_black, OL);
     }
-    bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
-    while(bcm2835_gpio_lev(pinning[active_pinning].oe_white) == OH){
+    bcm2835_gpio_write(pinning.oe_white, OL);
+    while(bcm2835_gpio_lev(pinning.oe_white) == OH){
         printf("OE white clear error\n");
-        bcm2835_gpio_write(pinning[active_pinning].oe_white, OL);
+        bcm2835_gpio_write(pinning.oe_white, OL);
     }
 }
