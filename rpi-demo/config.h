@@ -9,6 +9,7 @@
 
 #define XL  (16 * 9)
 #define YL  (20 * 6)
+#define LEFT_TO_RIGHT   1
 
 #define INVERT_GPIO  0
 

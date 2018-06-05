@@ -18,9 +18,18 @@ void translate(uint8_t *in, uint8_t *out, int n)
     memset(out, 0, n);
     for(int i = 0; i < n * 8; i++) {
         if(get_bit(in, i)) {
-            int x = i % XL;
-            int y = i / XL;
-            set_bit(out, (x%16)*YP+(x/16)*YL+YL-1-y);
+            int xL = i % XL;
+            int yL = i / XL;
+
+            int colP = xL % 16;
+ #if LEFT_TO_RIGHT
+            int rowP = xL / 16 * YL - yL - 1;
+ #else
+            int rowP = (XL / 16 - (xL / 16)) * YL - yL - 1;
+ #endif
+
+            int bit = colP * YP + rowP;
+            set_bit(out, bit);
         }
     }
 }
