@@ -33,7 +33,7 @@
 #include <stdio.h>
 
 
-#if INVERT
+#if INVERT_GPIO
 #define OH LOW
 #define OL HIGH
 #else
