@@ -1,0 +1,87 @@
+#!/usr/bin/env python2
+
+from PIL import Image
+import sys
+import time
+import socket
+
+#UDPHOST="fe80::e54e:683:43ea:2632%eth0"
+UDPHOST="::1"
+UDPPORT=2323
+
+XL = 16 * 6
+YL = 20 * 4
+
+sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+msg = [0] * ((XL * YL) / 8)
+
+def send():
+	sock.sendto(''.join([chr(x) for x in msg]), (UDPHOST, UDPPORT))
+
+def setbit(bit):
+    msg[bit/8] |= 1 << (7 - (bit % 8))
+
+def setpixel(x, y):
+    setbit(x + y * XL)
+
+def clear():
+    global msg
+    msg = [0] * ((XL * YL) / 8)
+
+filename = sys.argv[1]
+meta_data = '.'.join(filename.split('.')[:-1]).split('-')
+repeats = 1
+if len(meta_data) >= 3:
+    repeats = int(meta_data[2])
+
+print "repeats:", repeats
+
+t = time.time()
+for repeat in range(repeats):
+    sleep_target = time.time()
+    print "loop"
+    im = Image.open(filename)
+
+    # To iterate through the entire gif
+    try:
+        while 1:
+            #print im.info
+            #print dir(im)
+            #print len(list(im.getdata()))
+            #print list(im.getdata())
+            #for i in range(0, 80*96, 96):
+            #    print list(im.getdata())[i:i+96]
+
+            #pixels = [' ' if x > 0 else 'x' for x in list(im.getdata())]
+            #print"###################################################################################################################"
+            #for i in range(0, 80*96, 96):
+            #    print ''.join(pixels[i:i+96])
+            #print"###################################################################################################################"
+
+            data =  list(im.getdata())
+            threshold = max(data) / 2
+            #threshold = 0
+            pixels = [x > threshold for x in data]
+            #pixels = [x > 0 for x in list(im.getdata())]
+            #print pixels
+            clear()
+            for i in range(len(msg)*8):
+                if pixels[i]:
+                    setbit(i)
+
+            time.sleep(max(0, sleep_target - time.time()))
+            #print msg
+            send()
+            print time.time() - t
+            t = time.time()
+
+            sleep_time = im.info['duration']/1000.
+            if sleep_time < 0.1:
+                sleep_time = 0.1
+            #time.sleep(sleep_time)
+            sleep_target = time.time() + sleep_time
+            im.seek(im.tell()+1)
+            # do something to im
+    except EOFError:
+        pass # end of sequence
+    time.sleep(max(0, sleep_target - time.time()))
