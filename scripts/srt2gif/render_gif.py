@@ -32,7 +32,8 @@ class Drawer:
         self.context.fill()
         self.context.set_source_rgb(1, 1, 1)
 
-        self._slide_frame += 1
+        if self._sliding:
+            self._slide_frame += 1
         if self._slide_frame >= SLIDE_FRAMES:
             self._sliding = False
 
@@ -43,12 +44,8 @@ class Drawer:
             if t_width > self.width:
                 warnings.warn("Text wider than surface")
 
-            if self._sliding:
-                slide = self._slide_frame * (self._line_height / SLIDE_FRAMES)
-            else:
-                slide = 0
+            slide = self._slide_frame * (self._line_height / SLIDE_FRAMES)
             line_y = self._line_height * i - slide 
-            print(line_y)
             x = - x_bearing
             y = - y_bearing + line_y
 
