@@ -70,17 +70,25 @@ cr.scale(1,1)
 drawer = Drawer(cr, width, height)
 
 srt = pysrt.open(sys.argv[1])
+lines = len(srt)
+
 frame = 0
 index = 0
-end = srt[-1].end
+
+post_frames = 0
 
 while True:
     secs = frame / FPS
     now = {"seconds": secs}
-    line = srt[index]
+    if index < lines:
+        line = srt[index]
+    else:
+        # All lines are completed, now only let the animation finish
+        if post_frames > SLIDE_FRAMES:
+            break
+        post_frames += 1
 
     if line.start <= now:
-        print(line.text)
         drawer.add_text(line.text)
         index += 1
 
@@ -88,6 +96,4 @@ while True:
     drawer.draw_frame()
     surface.write_to_png("{:0>5}.png".format(frame))
 
-    if end < now:
-        break
     frame += 1
