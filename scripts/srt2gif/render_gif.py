@@ -1,6 +1,7 @@
-from math import pi
+import sys
 import warnings
 import cairo
+import pysrt
 
 FPS = 10
 SLIDE_FRAMES = 3
@@ -70,13 +71,26 @@ cr = cairo.Context(surface)
 cr.scale(1,1)
 
 drawer = Drawer(cr, width, height)
-txt = ["bla", "afjislaaöl", "mmhmadol", "pwqpfka,sa", "ifacjoawkowa", "ijdaokcvaokea", "jfaokcawa"]
 
-for i in range(20):
+srt = pysrt.open(sys.argv[1])
+frame = 0
+index = 0
+end = srt[-1].end
 
-    if i % 3:
-        drawer.add_text(txt.pop())
+while True:
+    secs = frame / FPS
+    now = {"seconds": secs}
+    line = srt[index]
+
+    if line.start <= now:
+        print(line.text)
+        drawer.add_text(line.text)
+        index += 1
+
+
     drawer.draw_frame()
+    surface.write_to_png("{:0>5}.png".format(frame))
 
-    surface.write_to_png("txt%i.png" % i)
-
+    if end < now:
+        break
+    frame += 1
