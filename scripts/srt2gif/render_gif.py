@@ -82,16 +82,15 @@ while True:
     now = {"seconds": secs}
     if index < lines:
         line = srt[index]
+
+        if line.start <= now:
+            drawer.add_text(line.text)
+            index += 1
     else:
         # All lines are completed, now only let the animation finish
         if post_frames > SLIDE_FRAMES:
             break
         post_frames += 1
-
-    if line.start <= now:
-        drawer.add_text(line.text)
-        index += 1
-
 
     drawer.draw_frame()
     surface.write_to_png("{:0>5}.png".format(frame))
