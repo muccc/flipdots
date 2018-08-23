@@ -54,7 +54,7 @@ class Drawer:
     
     def add_text(self, text):
         if self._sliding:
-            warnings.warn("can't keep up, still animating previous text")
+            warnings.warn("can't keep up, still animating previous text (%s)" % text)
         self.text.append(text)
         if len(self.text) <= self._lines:
             return 
