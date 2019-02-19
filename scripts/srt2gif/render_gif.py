@@ -3,7 +3,7 @@ import warnings
 import cairo
 import pysrt
 
-FPS = 10
+FPS = 1/0.11
 SLIDE_FRAMES = 3
 
 class Drawer:
