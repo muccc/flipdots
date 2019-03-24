@@ -5,6 +5,7 @@ with import <nixpkgs> {}; {
       python3
       python3Packages.flask
       python3Packages.gevent
+      python3Packages.numpy
       python3Packages.pygame
     ];
   };

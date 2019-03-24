@@ -157,6 +157,7 @@ class InputHandler(threading.Thread):
             self.socket = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         self.address = ("", 5555)
         self.socket.bind(self.address)
+        self.lastCommand = time()
         queues = (Queue(), Queue())
         self.playerInputHandlers = (
             (PlayerInputHandler(players[0],queues[0]), queues[0]),
@@ -184,6 +185,8 @@ class InputHandler(threading.Thread):
                     self.playerIds[ri] = player_id
                     player = ri
             self.playerInputHandlers[player][1].put(command)
+            if command != "NONE":
+                self.lastCommand = time()
 
 class GameHandler:
     def __init__(self, size, speed, udpHostsAndPorts = [], console_out = False, invert = False, panel_defaults = False, ball_speed = 6, player_speed = 3, scores_file = "scores"):
@@ -221,8 +224,8 @@ class GameHandler:
                     self.ball.change_direction((1,0))
             if self.invert:
                 pass
-            if self.flipdot_out:
-                flipImage = FlipdotImage(image.T)
+            if self.flipdot_out and (playing or (time() - self.inputHandler.lastCommand < 1)):
+                flipImage = FlipdotImage(np.flipud(image.T))
                 score_string = "%d - %d" % (self.players[0].score, self.players[1].score)
                 flipImage.blitTextAtPosition(score_string, xPos=self.get_center()[0]-2*(len(score_string)-1), yPos = 2*round(self.size[1]/12))
                 total_score_string = "%d - %d" % (self.players[0].total_score, self.players[1].total_score)
@@ -232,7 +235,7 @@ class GameHandler:
                         flipImage.blitTextAtPosition("Press Left", xPos=self.players[0].upper_right()[0] + 2, yPos = self.size[1] - self.players[0].upper_right()[1])
                     if not self.players[1].active:
                         flipImage.blitTextAtPosition("Press Left", xPos=self.players[1].lower_left()[0] - 46, yPos = self.size[1] - self.players[1].upper_right()[1])
-                self.flipmatrix.show(flipImage)
+                self.flipmatrix.showImage(flipImage)
             if self.console_out:
                 self.printImage(image)
             wait = (1./self.speed) - (time() - t)
