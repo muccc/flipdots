@@ -1,0 +1,2 @@
+This dir contains some quick&dirty live camera examples for the 31C3 display in the entrance area. 
+They use OpenCV to grab webcam frames and either binarize them or detect edges and then display the result on the flipdot displays.
